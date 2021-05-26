@@ -1,23 +1,29 @@
 package com.sabu.entities;
 
+import static com.sabu.Constants.BOSS;
+import static com.sabu.Constants.NINJA;
 
 import com.sabu.validator.Validator;
 
-public class Ninja {
+public class Ninja extends Unit{
+
     private final Boolean isBoss;
-    private Integer x, y;
+
 
     public Ninja(boolean isBoss, int x, int y) {
+        super(x,y);
         this.isBoss = isBoss;
-        this.x = x;
-        this.y = y;
     }
 
 
     public void validate() {
+        super.validate();
         Validator.isNotNull(isBoss(), "isBoss is null", 400);
-        Validator.isValidRange(getX(), 0, 4, "Invalid X range");
-        Validator.isValidRange(getY(), 0, 4, "Invalid Y range");
+    }
+
+    @Override
+    public char getUnitType() {
+        return isBoss?BOSS:NINJA;
     }
 
     public void move() {
@@ -28,20 +34,5 @@ public class Ninja {
         return isBoss;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    private void setX(Integer x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    private void setY(Integer y) {
-        this.y = y;
-    }
 
 }

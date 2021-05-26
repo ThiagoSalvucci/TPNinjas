@@ -49,7 +49,7 @@ public class Main {
                 Ninja ninja = new Ninja(isBoss, x, y);
                 try {
                     ninja.validate();
-                    board.setUnit(x, y, isBoss ? BOSS : NINJA);
+                    board.setUnit(ninja);
                     ninjas++;
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
