@@ -40,9 +40,14 @@ public class Validator {
     }
 
     public static void isNotEmpty(String value, String message) {
-
         if (value == null || value.trim().isEmpty()) {
             throw new EmptyValueException(message);
+        }
+    }
+
+    public static void isTrue(boolean condition, String message){
+        if(!condition){
+            throw new UnexpectedValueException(message);
         }
     }
 

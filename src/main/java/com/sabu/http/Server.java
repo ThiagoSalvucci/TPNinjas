@@ -8,6 +8,7 @@ import com.sabu.entities.Ninja;
 import com.sabu.entities.Player;
 import com.sabu.http.prueba.CustomHandler;
 import com.sabu.mapper.Mapper;
+import com.sabu.utils.Config;
 import com.sabu.validator.Validator;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -18,8 +19,8 @@ import java.net.InetSocketAddress;
 
 
 public class Server {
-    private static final String ip = "192.168.0.180";
-    private static final int port = 25565;
+    private static final String ip = Config.getIp();
+    private static final int port = Config.getPort();
     HttpServer server;
 
 

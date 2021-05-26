@@ -1,4 +1,4 @@
-package com.sabu;
+package com.sabu.utils;
 
 public class Constants {
 
@@ -14,4 +14,5 @@ public class Constants {
     public static final int MAX_PLAYERS = 2;
     public static final int MAX_BOARD_SIZE = 5;
     public static final int MAX_NINJAS = 3;
+    public static final String IP_REGEX = "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
 }

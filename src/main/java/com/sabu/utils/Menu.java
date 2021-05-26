@@ -1,4 +1,4 @@
-package com.sabu;
+package com.sabu.utils;
 
 public class Menu {
 
