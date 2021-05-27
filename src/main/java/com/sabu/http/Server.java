@@ -60,7 +60,7 @@ public class Server {
 
     public void postSetNinja() {
         //noinspection SpellCheckingInspection
-        server.createContext("/setninja", new CustomHandler() {
+        server.createContext("/player/setninja", new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
                 Mapper mapper = new Mapper(Ninja.class);
@@ -86,7 +86,7 @@ public class Server {
 
     public void postMoveNinja() {
         //noinspection SpellCheckingInspection
-        server.createContext("/moveninja", new CustomHandler() {
+        server.createContext("/player/moveninja", new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
                 Mapper mapper = new Mapper(Movement.class);
@@ -103,7 +103,7 @@ public class Server {
 
     public void postAttackLocation() {
         //noinspection SpellCheckingInspection
-        server.createContext("/attacklocation", new CustomHandler() {
+        server.createContext("/player/attacklocation", new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
                 Mapper mapper = new Mapper(Attack.class);
@@ -117,7 +117,7 @@ public class Server {
     }
 
     public void getConfirmConnection() {
-        server.createContext("/connect", new CustomHandler() {
+        server.createContext("/game/connect", new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
                 game.ClientConnected();
