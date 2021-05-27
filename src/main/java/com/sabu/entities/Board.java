@@ -11,7 +11,7 @@ public class Board {
         map = new Unit[MAX_BOARD_SIZE][MAX_BOARD_SIZE];
         for (int y = 0; y < MAX_BOARD_SIZE; ++y) {
             for (int x = 0; x < MAX_BOARD_SIZE; ++x) {
-                setUnit(new Tile(x, y, false));
+                setUnit(new Tile(false, x, y));
             }
         }
     }
@@ -41,7 +41,7 @@ public class Board {
                 .getUnitType(), NINJA, "Not ninja in selected location");//VALIDATES THAT THE CURRENT NINJA LOCATION IS TRUE
 
 
-        setUnit(new Tile(ninja.getX(), ninja.getY(), false));// CLEAR PREVIOUS LOCATION
+        setUnit(new Tile(false, ninja.getY(), ninja.getX()));// CLEAR PREVIOUS LOCATION
 
         ninja.setX(moveX); //SET TO NEW LOCATION
         ninja.setY(moveY);

@@ -1,8 +1,6 @@
 package com.sabu;
 
-import com.sabu.entities.Board;
-import com.sabu.entities.Ninja;
-import com.sabu.entities.Player;
+import com.sabu.entities.*;
 import com.sabu.utils.Input;
 import com.sabu.utils.Printer;
 import com.sabu.validator.Validator;
@@ -15,10 +13,13 @@ import static com.sabu.utils.Constants.*;
 
 public class Game {
     private final List<Player> players;
+    private static Boolean isClientConnected;
+
 
 
     public Game() {
         players = new ArrayList<>(MAX_PLAYERS);
+        isClientConnected = false;
     }
 
     public void createPlayer(){
@@ -27,7 +28,7 @@ public class Game {
         Printer.printBoard(board);
 
         int ninjas = 0;
-        String inputMessage = "Enter the NinjaBoss location Ex ('A1', X = A, Y = 1)";
+        String inputMessage = "Enter the NinjaBoss location Ex('A1', X = A, Y = 1)";
         while (ninjas < MAX_NINJAS) {
             try {
                 boolean isBoss = ninjas == 0;
@@ -52,6 +53,29 @@ public class Game {
         players.add(new Player(name, board));
     }
 
+    public void ClientConnected() {
+        isClientConnected = true;
+    }
+
+    public Boolean getClientConnected() {
+        return isClientConnected;
+    }
+
+    public void attack(Attack attack,int clientId){
+        Board attackedBoard =players.get(clientId).getBoard();
+        Unit attackedUnit = attackedBoard.getUnitAt(attack.getAttackX(), attack.getAttackY());
+        char attackedUnitType = attackedUnit.getUnitType();
+
+        if(attackedUnitType == BOSS){
+            attackedBoard.setUnit(new Ninja(false,attackedUnit.getX(),attackedUnit.getY()));
+        }else if(attackedUnitType == NINJA){
+            attackedBoard.setUnit(new Tile(false, attackedUnit.getX(), attackedUnit.getY()));
+        }else{
+            attackedBoard.setUnit(new Tile(true, attackedUnit.getX(), attackedUnit.getY()));
+        }
+
+        //TODO falta respuesta al cliente/host en cualquier caso!
+    }
 
     public Player getPlayer(int id) {
         return players.get(id);

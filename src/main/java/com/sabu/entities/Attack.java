@@ -3,6 +3,22 @@ package com.sabu.entities;
 import com.sabu.validator.Validator;
 
 public class Attack {
+    public Integer getAttackX() {
+        return attackX;
+    }
+
+    public void setAttackX(Integer attackX) {
+        this.attackX = attackX;
+    }
+
+    public Integer getAttackY() {
+        return attackY;
+    }
+
+    public void setAttackY(Integer attackY) {
+        this.attackY = attackY;
+    }
+
     private Integer attackX;
     private Integer attackY;
 

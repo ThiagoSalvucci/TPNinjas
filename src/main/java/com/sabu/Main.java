@@ -12,6 +12,7 @@ import com.sabu.validator.Validator;
 import java.awt.*;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.concurrent.TimeoutException;
 
 import static com.sabu.utils.Constants.*;
 
@@ -25,10 +26,22 @@ public class Main {
         Game game = new Game();
 
         if (Input.getConnectionMode() == PLAYER_HOST) {
-            game.createPlayer();
-            Printer.clearScreen();
+
             new Server(game);
             System.out.println("Server Start.....");
+
+
+            while(!game.getClientConnected()){
+                System.out.println("Waiting for Client..");
+                try {
+                    Thread.sleep(2500);
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
+            }
+            game.createPlayer();
+            Printer.clearScreen();
+            System.out.println("Game Start!");
         }else{
 
         }
