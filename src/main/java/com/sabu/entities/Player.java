@@ -1,9 +1,7 @@
 package com.sabu.entities;
 
 public class Player {
-
     private String name;
-
     private Board board;
 
 
@@ -11,25 +9,19 @@ public class Player {
         this.name = name;
         this.board = board;
     }
-
+    public Player(String name){
+        this.name = name;
+    }
 
     public void validate() {
-
     }
 
     public String getName() {
         return name;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Board getBoard() {
         return board;
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
-    }
+
 }

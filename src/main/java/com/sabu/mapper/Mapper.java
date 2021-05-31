@@ -2,6 +2,7 @@ package com.sabu.mapper;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sabu.http.Response;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,22 +11,19 @@ import java.lang.reflect.Type;
 
 public class Mapper {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private final Type type;
 
-    public Mapper(Type type) {
-        this.type = type;
+
+    public static String toJson(Object object) {
+        return gson.toJson(object);
     }
 
-    public String toJson(Object object) {
-        return gson.toJson(object, type);
-    }
-
-    public Object fromJson(String json) {
+    public static <T> T fromJson(String json, Type type) {
         return gson.fromJson(json, type);
     }
 
-    public Object fromJson(InputStream in) {
+    public static <T> T fromJson(InputStream in, Type type) {
         return gson.fromJson(new InputStreamReader(in), type);
     }
+
 
 }

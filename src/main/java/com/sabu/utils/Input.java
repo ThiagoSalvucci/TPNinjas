@@ -1,5 +1,7 @@
 package com.sabu.utils;
 
+import com.sabu.entities.Attack;
+import com.sabu.entities.Ninja;
 import com.sabu.validator.Validator;
 
 import java.awt.*;
@@ -49,8 +51,32 @@ public class Input {
         return Integer.parseInt(response);
     }
 
+    public static Attack getAttack(){
+        Attack attack = null;
+        while(attack == null) {
+            try {
+                System.out.println("Enter attack location");
+                String response = scanner.nextLine();
+                response = response.toUpperCase(Locale.ROOT);
+                Validator.isTrue(response.matches("^[A-E][1-5]$"), "Invalid input");
+                attack = new Attack();
+                attack.setAttackX((int) response.charAt(0) - 65);
+                attack.setAttackY((int) response.charAt(1) - 49);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return attack;
+    }
 
-
-
+    public static Ninja getNinja(boolean isBoss){
+        String message = "Enter ninja location";
+        if(isBoss){
+            message = "Enter Ninja Boss location";
+        }
+        Point point = getBoardLocation(message);
+        Ninja ninja = new Ninja(isBoss, point.x, point.y);
+        return ninja;
+    }
 
 }

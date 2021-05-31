@@ -10,6 +10,9 @@ public abstract class Unit {
         this.x = x;
         this.y = y;
     }
+    public Unit(){
+
+    }
 
     public void validate() {
         Validator.isValidRange(x, 0, 4, "Invalid X range");

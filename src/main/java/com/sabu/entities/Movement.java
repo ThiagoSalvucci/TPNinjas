@@ -7,6 +7,13 @@ public class Movement {
     private Ninja ninja;
     private Integer moveX, moveY;
 
+
+    public Movement(Ninja ninja, Integer moveX, Integer moveY) {
+        this.ninja = ninja;
+        this.moveX = moveX;
+        this.moveY = moveY;
+    }
+
     public void validate() {
         Validator.isNotNull(ninja, "ninja is null", 400);
         Validator.isNotNull(moveX, "moveX is null", 400);

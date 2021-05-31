@@ -1,9 +1,6 @@
 package com.sabu.validator;
 
-import com.sabu.exception.EmptyValueException;
-import com.sabu.exception.InvalidNumberException;
-import com.sabu.exception.NullException;
-import com.sabu.exception.UnexpectedValueException;
+import com.sabu.exception.*;
 
 
 public class Validator {
@@ -39,6 +36,18 @@ public class Validator {
         }
     }
 
+    public static void isExpectedValue(int value, int expectedValue, String message) {
+        if (value != expectedValue) {
+            throw new UnexpectedValueException(message);
+        }
+    }
+
+    public static void isExistingValue(Object value, Object existingValue, String message) {
+        if (value.equals(existingValue)) {
+            throw new ExistingValueException(message);
+        }
+    }
+
     public static void isNotEmpty(String value, String message) {
         if (value == null || value.trim().isEmpty()) {
             throw new EmptyValueException(message);
@@ -50,5 +59,6 @@ public class Validator {
             throw new UnexpectedValueException(message);
         }
     }
+
 
 }

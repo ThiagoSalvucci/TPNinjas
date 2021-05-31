@@ -1,5 +1,9 @@
 package com.sabu.entities;
 
+import com.google.gson.InstanceCreator;
+
+import java.lang.reflect.Type;
+
 import static com.sabu.utils.Constants.BLANK;
 import static com.sabu.utils.Constants.BROKE;
 
@@ -15,5 +19,7 @@ public class Tile extends Unit {
     public char getUnitType() {
         return isBroken ? BROKE : BLANK;
     }
+
+
 
 }

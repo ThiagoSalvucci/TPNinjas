@@ -3,6 +3,10 @@ package com.sabu.entities;
 import com.sabu.validator.Validator;
 
 public class Attack {
+
+    private Integer attackX;
+    private Integer attackY;
+
     public Integer getAttackX() {
         return attackX;
     }
@@ -18,10 +22,6 @@ public class Attack {
     public void setAttackY(Integer attackY) {
         this.attackY = attackY;
     }
-
-    private Integer attackX;
-    private Integer attackY;
-
 
     public void validate() {
         Validator.isNotNull(attackX, "attackX is null", 400);

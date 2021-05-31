@@ -1,40 +1,52 @@
 package com.sabu.http;
 
+import com.google.api.client.http.*;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.sabu.exception.Error;
+import com.sabu.exception.ErrorException;
+import com.sabu.mapper.Mapper;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 
 public class HttpUtils {
+
+    public static final int OK = 200;
+    private static final int BAD_REQUEST = 400;
+    private static final int NOT_FOUND = 404;
+    private static final int INTERNAL_SERVER_ERRPR = 500;
+
     /**
-     * Envia respuesta al cliente con status 200, indicando exito
+     * Sends the response to the client with status 200, indicating success.
      *
-     * @param response El cuerpo de la respuesta
-     * @param exchange El conjunto de datos
+     * @param response The body of the response
+     * @param exchange The attributes
      */
     public static void ok(String response, HttpExchange exchange) {
-        sendResponse(200, response, exchange);
+        sendResponse(OK, response, exchange);
     }
 
     /**
-     * Envia respuesta al cliente con status 400, indicando falla(ej Json incorrecto, Valores invalidos, etc)
+     * Sends the response to the client with status 400, indicating failure (ex incorrect Json, invalid attributes, etc)
      *
-     * @param response El cuerpo de la respuesta
-     * @param exchange El conjunto de datos
+     * @param response The body of the response
+     * @param exchange The attributes
      */
     public static void badRequest(String response, HttpExchange exchange) {
-        sendResponse(400, response, exchange);
+        sendResponse(BAD_REQUEST, response, exchange);
     }
 
     /**
-     * Envia respuesta al cliente con status 400, indicando que no se encuentra el recurso
+     * Sends the response to the client with status 404, indicating that the recurse was not found.
      *
-     * @param response El cuerpo de la respuesta
-     * @param exchange El conjunto de datos
+     * @param response The body of the response
+     * @param exchange The attributes
      */
     public static void notFound(String response, HttpExchange exchange) {
-        sendResponse(404, response, exchange);
+        sendResponse(NOT_FOUND, response, exchange);
     }
 
 
@@ -49,6 +61,49 @@ public class HttpUtils {
             e.printStackTrace();
         }
 
+    }
+
+
+    public static Response doGet(String endpoint, Type type) {
+        HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
+        Response response = null;
+
+        try {
+            HttpRequest httpRequest = requestFactory.buildGetRequest(new GenericUrl(endpoint));
+            HttpResponse httpResponse = httpRequest.execute();
+            int responseCode = httpResponse.getStatusCode();
+            Object responseBody = Mapper.fromJson(httpResponse.parseAsString(), type);
+            response = new Response(responseCode, responseBody);
+            httpResponse.disconnect();
+        } catch (IOException e) {
+            System.out.println("Connection refused");
+        }
+
+        return response;
+    }
+
+    public static Response doPost(String endpoint,Object body,Type responseType){
+
+        HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
+        Response response = null;
+
+        try {
+            HttpContent content = ByteArrayContent.fromString(null,Mapper.toJson(body));
+            HttpRequest httpRequest = requestFactory.buildPostRequest(new GenericUrl(endpoint),content);
+            httpRequest.getHeaders().setContentType("application/json");
+            HttpResponse httpResponse = httpRequest.execute();
+            int responseCode = httpResponse.getStatusCode();
+            Object responseBody = Mapper.fromJson(httpResponse.parseAsString(), responseType);
+            response = new Response(responseCode, responseBody);
+            httpResponse.disconnect();
+        }catch (HttpResponseException e){
+            Error error = Mapper.fromJson(e.getContent(),Error.class);
+            response = new Response(error.getStatusCode(),error);
+        } catch (IOException e) {
+            System.out.println("Connection refused");
+        }
+
+        return response;
     }
 
 }
