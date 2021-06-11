@@ -16,6 +16,8 @@ public class Menu {
         ServerManager serverManager = new ServerManager();
         Printer.print("Host Server Start.....");
         char scan = 'Y';
+        int count = 0;
+
         while (!serverManager.isClientConnected() && scan == 'Y'){
             new HostServer();
 
@@ -23,16 +25,19 @@ public class Menu {
 
                 serverManager.setIp(Input.getIp());
                 if (!serverManager.connect()) {
-                    scan = tryAgain();
+                      scan = tryAgain();
                 }else {
                     Printer.print("Client connected!");
                 }
 
             }else {
+
                 serverManager.waitForClient();
-                if (!serverManager.isClientConnected()) {
+                if (!serverManager.isClientConnected() && count == 10) {
                     scan = tryAgain();
+                    count = 0;
                 }else Printer.print("Client connected!");
+                count ++;
             }
             if (scan == 'N') return false;
         }
@@ -51,6 +56,7 @@ public class Menu {
         Printer.print("Client Server Start.....");
         char scan = 'Y';
         new ClientServer();
+        int count = 0;
 
         while (!clientManager.isHostConnected() && scan == 'Y'){
 
@@ -69,9 +75,11 @@ public class Menu {
                     System.out.println(e.getMessage());
                 }
 
-                if (!clientManager.isHostConnected()) {
+                if (!clientManager.isHostConnected() && count == 10) {
                     scan = tryAgain();
+                    count = 0;
                 }else Printer.print("Invite received!!");
+                count++;
             }
 
             if (scan == 'N') return false;
@@ -80,45 +88,11 @@ public class Menu {
     }
 
 
-//    while(!isOver){
-//        cliente mandame datos;
-//        server llename datos;
-//
-//        playerInTurn = RandomTurn;
-//
-//        while (turnIsNotOver(playerInturn)){
-//            menu.getActions(id);
-//            executeActions;
-//            turnOver;
-//        }
-//
-//
-//
-//    }
-
-
-//        serverGameManager.setPlayer();
-//        serverGameManager.setNinjas();//TODO mover!
-//        Printer.clearScreen();
-        //serverGameManager.runGame();
-
-//        ClientManager clientGameManager = new ClientManager(Input.getIp(), Input.getPort());
-//        new ClientServer(Input.getIp(), Input.getPort());
-//        clientGameManager.connect();
-//        ClientServer.waitForHost();
-//        Printer.clearScreen();
-//        clientGameManager.setPlayer();
-//        clientGameManager.setNinjas();//TODO mover!
-//        Printer.clearScreen();
-//        //clientGameManager.runGame();
-//    }
-
-
     public static char selectionMenu(){
         Printer.print("Choose from these Actions");
         Printer.print("-------------------------\n");
         Printer.print("1 - Host Ninja Game");//
-        Printer.print("2 - Connect to Ninja server");//
+        Printer.print("2 - Connect to a server");//
         Printer.print("3 - Exit Program");//
         return Input.scanChar("Only valid options are 1, 2 , 3","123");
     }

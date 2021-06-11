@@ -7,6 +7,10 @@ import com.sabu.utils.Config;
 public class RequestManager {
     private String host;
 
+    public RequestManager(String ip) {
+        this.host = "http://" + ip + ":" + "25565";
+    }
+
     public Response sendPost(Object object, String endpoint){//TODO probar
         return HttpUtils.doPost(host + endpoint, object, Response.class);
     }
@@ -15,7 +19,5 @@ public class RequestManager {
         return HttpUtils.doGet(host + endpoint,Response.class);
     }
 
-    public void setIp(String ip) {
-        this.host = "http://" + ip + ":" + Config.getPort();
-    }
+
 }
