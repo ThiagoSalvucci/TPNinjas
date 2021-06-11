@@ -5,7 +5,6 @@ import com.sabu.exception.*;
 
 public class Validator {
 
-
     public static void isNotNull(Object object, String message, int statusCode) {
         if (object == null) {
             throw new NullException(message, statusCode);
@@ -41,6 +40,11 @@ public class Validator {
             throw new UnexpectedValueException(message);
         }
     }
+    public static void isExpectedValue(String value, String expectedValue, String message) {
+        if (value.equals(expectedValue)) {
+            throw new UnexpectedValueException(message);
+        }
+    }
 
     public static void isExistingValue(Object value, Object existingValue, String message) {
         if (value.equals(existingValue)) {
@@ -59,6 +63,5 @@ public class Validator {
             throw new UnexpectedValueException(message);
         }
     }
-
 
 }

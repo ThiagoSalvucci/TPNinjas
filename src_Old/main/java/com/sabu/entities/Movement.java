@@ -20,6 +20,7 @@ public class Movement {
         Validator.isNotNull(moveY, "moveY is null", 400);
         Validator.isValidRange(moveX, 0, 4, "Invalid movement value: moveX");
         Validator.isValidRange(moveY, 0, 4, "Invalid movement value: moveY");
+        
         ninja.validate();
     }
 

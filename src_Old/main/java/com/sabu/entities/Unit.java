@@ -5,7 +5,6 @@ import com.sabu.validator.Validator;
 public abstract class Unit {
     private Integer x, y;
 
-
     public Unit(Integer x, Integer y) {
         this.x = x;
         this.y = y;
@@ -36,6 +35,8 @@ public abstract class Unit {
     public void setY(Integer y) {
         this.y = y;
     }
+
+
 
 
 }

@@ -1,46 +1,69 @@
 package com.sabu;
 
-import com.sabu.manager.ClientGame;
-import com.sabu.http.Server;
-import com.sabu.manager.ServerGame;
-import com.sabu.utils.Config;
-import com.sabu.utils.Printer;
+import com.sabu.manager.gamemanager.ClientManager;
 
-import static com.sabu.utils.Constants.*;
+import com.sabu.manager.gamemanager.ServerManager;
+import com.sabu.utils.Config;
+import com.sabu.utils.Menu;
+
 
 public class Main {
 
 
     public static void main(String[] args) {
         Config.init();
+        boolean running = true;
+        char choice;
 
-        System.out.println("Welcome to the Game!!");
+        while (running) {
+            choice = Menu.selectionMenu();
+            switch (choice) {
+                case '1':
+                    if (Menu.gameInitHost()) {//queres invitar o esperar Ninja que se conected
+                        ServerManager manager = new ServerManager();
+                        manager.run();
+                    }
+                    break;
 
+                case '2':
+                    if (Menu.gameInitClient()) {
+                        ClientManager manager = new ClientManager();
+                        manager.run();
+                    }
+                    break;
 
-        if (Integer.parseInt(args[0]) == PLAYER_HOST) {
-            ServerGame game = new ServerGame();
-            new Server(game);
-            System.out.println("Server Start.....");
-
-            while(!game.getClientConnected()){
-                System.out.println("Waiting for Client..");
-                try {
-                    Thread.sleep(2500);
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
-                }
+                case '3':
+                    running = false;
             }
-
-            game.createPlayer();//TODO MOVER PRIMER
-            Printer.clearScreen();
-            System.out.println("Game Start!");
-
-        }else{
-            ClientGame game = new ClientGame();
-            game.connect();
-            game.createPlayer();
         }
 
     }
 }
 
+
+
+
+
+
+//        if (Integer.parseInt(args[0]) == PLAYER_HOST) {
+//        ServerManager serverGameManager = new ServerManager();//TODO cambiar puertos para probar!
+//        Printer.clearScreen();
+//        new HostServer();
+//        System.out.println("Server Start.....");
+//        HostServer.waitForClient();
+//        serverGameManager.connect();
+//        Printer.clearScreen();
+//
+//        System.out.println("Game Start!");
+//        serverGameManager.setPlayer();
+//        serverGameManager.setNinjas();//TODO mover!
+//        Printer.clearScreen();
+//
+//    }else{
+//        ClientManager clientGameManager = new ClientManager();
+//
+//        clientGameManager.connect();
+//        clientGameManager.setPlayer();
+//    }
+//
+//}

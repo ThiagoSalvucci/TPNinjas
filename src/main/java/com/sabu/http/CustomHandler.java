@@ -2,7 +2,6 @@ package com.sabu.http;
 
 import com.sabu.exception.Error;
 import com.sabu.exception.ErrorException;
-import com.sabu.http.HttpUtils;
 import com.sabu.mapper.Mapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;

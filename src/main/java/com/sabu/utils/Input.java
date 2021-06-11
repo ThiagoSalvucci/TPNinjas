@@ -1,15 +1,18 @@
 package com.sabu.utils;
 
-import com.sabu.entities.Attack;
-import com.sabu.entities.Ninja;
+import com.sabu.entities.Action;
+import com.sabu.entities.pieces.Ninja;
 import com.sabu.validator.Validator;
 
 import java.awt.*;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.Scanner;
 
-public class Input {
+import static com.sabu.utils.Constants.*;
 
+public class Input {
+    private static final Properties properties = new Properties();
     private static Scanner scanner = new Scanner(System.in);
 
     public static Point getBoardLocation(String message){
@@ -41,33 +44,47 @@ public class Input {
         return response;
     }
 
-    public static int getConnectionMode(){
-        System.out.println("how do you wanna launch? Host = 0, Client = 1");
+    public static String getConnectionMode(String message){
+        Printer.print(message);
         String response = scanner.nextLine();
-        while (!response.matches("^[0-1]$")){
-            System.out.println("Invalid input, Host = 0, Client = 1");
+        response = response.toUpperCase(Locale.ROOT);
+        while (!response.matches("^[YN]$")){
+            System.out.println("Invalid input,Only accepts Y/N");
             response = scanner.nextLine();
+            response = response.toUpperCase(Locale.ROOT);
         }
-        return Integer.parseInt(response);
+        return response;
     }
 
-    public static Attack getAttack(){
-        Attack attack = null;
+
+
+    public static Action getAction(Ninja ninja, char actionType){
+        Action attack = null;
+        String action = "move";
+        if (actionType == ATTACK){
+            action = "attack";
+        }
+
         while(attack == null) {
             try {
-                System.out.println("Enter attack location");
+                Printer.print("Enter location to" + action);
                 String response = scanner.nextLine();
                 response = response.toUpperCase(Locale.ROOT);
                 Validator.isTrue(response.matches("^[A-E][1-5]$"), "Invalid input");
-                attack = new Attack();
-                attack.setAttackX((int) response.charAt(0) - 65);
-                attack.setAttackY((int) response.charAt(1) - 49);
+
+                int x = Translate.translateIntToChar(response.charAt(0),65);
+                int y = Translate.translateIntToChar(response.charAt(1),49);
+                attack = new Action(x,y,ninja,actionType);
+
+
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
         return attack;
     }
+
+
 
     public static Ninja getNinja(boolean isBoss){
         String message = "Enter ninja location";
@@ -78,5 +95,37 @@ public class Input {
         Ninja ninja = new Ninja(isBoss, point.x, point.y);
         return ninja;
     }
+
+
+    public static String getIp(){
+        String response = "";
+        while (!response.matches(IP_REGEX)){
+            System.out.print("Please enter Ninja valid ip: ");
+            response = scanner.nextLine();
+        }
+        return response;
+    }
+
+    public static int getPort(){
+        String response = "";
+        while (!response.matches(PORT_REGEX)){
+            System.out.print("Please enter Ninja valid host port: ");
+            response = scanner.nextLine();
+        }
+        return Integer.parseInt(response);
+    }
+
+    public static char scanChar(String message, String chars){
+        String response = scanner.nextLine();
+        response = response.toUpperCase(Locale.ROOT);
+        chars = chars.toUpperCase(Locale.ROOT);
+        while (!response.matches("^[ "+ chars +"]$")){
+            System.out.println(message);
+            response = scanner.nextLine();
+        }
+
+        return response.charAt(0);
+    }
+
 
 }

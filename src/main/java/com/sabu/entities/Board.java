@@ -1,11 +1,16 @@
 package com.sabu.entities;
 
-import com.sabu.validator.Validator;
+import com.sabu.entities.pieces.Ninja;
+import com.sabu.entities.pieces.Tile;
+import com.sabu.entities.pieces.Unit;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.sabu.utils.Constants.*;
 
 public class Board {
-    private final Unit[][] map; //TODO rompe el gson magicamente.
+    private final Unit[][] map;
     private int aliveNinjas;
 
     public Board() {
@@ -18,9 +23,6 @@ public class Board {
         }
     }
 
-    public void validate() {
-        Validator.isNotNull(map, "map is null", 400);
-    }
 
     public int getAliveNinjas() {
         return aliveNinjas;
@@ -28,30 +30,29 @@ public class Board {
 
     public void setUnit(Unit unit) {
         map[unit.getY()][unit.getX()] = unit;
-        aliveNinjas++;
+        if(unit.getUnitType() == BOSS || unit.getUnitType() == NINJA){
+            aliveNinjas++;
+        }//TODO cambiar
     }
 
     public Unit getUnitAt(int x, int y) {
         return map[y][x];
     }
 
-    public void moveUnit(Movement movement) {
-        movement.validate();
-        int moveX = movement.getMoveX();
-        int moveY = movement.getMoveY();
-        Ninja ninja = movement.getNinja();
+    public List<Ninja> getNinjas(){
+        Unit unit;
+        List<Ninja> unitList = new ArrayList<>();
 
-        Validator.isExpectedValue(getUnitAt(moveX, moveY)
-                .getUnitType(), BLANK, "Movement to occupied location");// VALIDATES THAT DESTINY LOCATION IS BLANK
+        for (int y = 0; y < MAX_BOARD_SIZE; ++y) {
+            for (int x = 0; x < MAX_BOARD_SIZE; ++x) {
+                unit = getUnitAt(x,y);
+                if (unit.getUnitType() == NINJA || unit.getUnitType() == BOSS){
+                    unitList.add((Ninja) unit);
+                }
+            }
+        }
 
-        Validator.isExpectedValue(getUnitAt(ninja.getX(), ninja.getY())
-                .getUnitType(), NINJA, "Not ninja in selected location");//VALIDATES THAT THE CURRENT NINJA LOCATION IS TRUE
-
-
-        setUnit(new Tile(false, ninja.getY(), ninja.getX()));// CLEAR PREVIOUS LOCATION
-
-        ninja.setX(moveX); //SET TO NEW LOCATION
-        ninja.setY(moveY);
-        setUnit(ninja); // MOVE TO NEW LOCATION
+        return unitList;
     }
+
 }

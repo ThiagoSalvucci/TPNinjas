@@ -3,7 +3,6 @@ package com.sabu.http;
 import com.google.api.client.http.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.sabu.exception.Error;
-import com.sabu.exception.ErrorException;
 import com.sabu.mapper.Mapper;
 import com.sun.net.httpserver.HttpExchange;
 
@@ -15,10 +14,10 @@ import java.nio.charset.StandardCharsets;
 public class HttpUtils {
 
     public static final int OK = 200;
-    private static final int BAD_REQUEST = 400;
-    private static final int NOT_FOUND = 404;
-    private static final int INTERNAL_SERVER_ERRPR = 500;
-
+    public static final int BAD_REQUEST = 400;
+    public static final int NOT_FOUND = 404;
+    public static final int INTERNAL_SERVER_ERRPR = 500;
+    public static final int NO_CONTENT = 204;
     /**
      * Sends the response to the client with status 200, indicating success.
      *
@@ -50,6 +49,7 @@ public class HttpUtils {
     }
 
 
+
     public static void sendResponse(int statusCode, String response, HttpExchange exchange) {
         try {
             exchange.sendResponseHeaders(statusCode, response.length());
@@ -63,7 +63,6 @@ public class HttpUtils {
 
     }
 
-
     public static Response doGet(String endpoint, Type type) {
         HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
         Response response = null;
@@ -73,7 +72,7 @@ public class HttpUtils {
             HttpResponse httpResponse = httpRequest.execute();
             int responseCode = httpResponse.getStatusCode();
             Object responseBody = Mapper.fromJson(httpResponse.parseAsString(), type);
-            response = new Response(responseCode, responseBody);
+            response = new Response(responseCode,"",responseBody);//TODO
             httpResponse.disconnect();
         } catch (IOException e) {
             System.out.println("Connection refused");
@@ -82,11 +81,11 @@ public class HttpUtils {
         return response;
     }
 
+
     public static Response doPost(String endpoint,Object body,Type responseType){
 
         HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
         Response response = null;
-
         try {
             HttpContent content = ByteArrayContent.fromString(null,Mapper.toJson(body));
             HttpRequest httpRequest = requestFactory.buildPostRequest(new GenericUrl(endpoint),content);
@@ -94,11 +93,11 @@ public class HttpUtils {
             HttpResponse httpResponse = httpRequest.execute();
             int responseCode = httpResponse.getStatusCode();
             Object responseBody = Mapper.fromJson(httpResponse.parseAsString(), responseType);
-            response = new Response(responseCode, responseBody);
+            response = new Response(responseCode,"TODO",responseBody);// TODO
             httpResponse.disconnect();
         }catch (HttpResponseException e){
             Error error = Mapper.fromJson(e.getContent(),Error.class);
-            response = new Response(error.getStatusCode(),error);
+            response = new Response(error.getStatusCode(), error.getMessage(), error);
         } catch (IOException e) {
             System.out.println("Connection refused");
         }

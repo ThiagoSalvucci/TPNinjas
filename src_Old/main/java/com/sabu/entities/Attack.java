@@ -6,6 +6,7 @@ public class Attack {
 
     private Integer attackX;
     private Integer attackY;
+    //private Ninja ninja;
 
     public Integer getAttackX() {
         return attackX;

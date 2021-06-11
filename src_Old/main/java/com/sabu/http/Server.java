@@ -15,7 +15,7 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-
+import static com.sabu.http.HttpUtils.*;
 import static com.sabu.http.HttpEndpoints.*;
 import static com.sabu.utils.Constants.*;
 
@@ -37,6 +37,7 @@ public class Server {
             postMoveNinja();
             postAttackLocation();
             postSetPlayer();
+            getUpdate();
             server.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,12 +49,12 @@ public class Server {
             @Override
             public void handler(HttpExchange exchange) {
                 Player player = Mapper.fromJson(exchange.getRequestBody(),Player.class);
-                Validator.isNotNull(player, "player is null", 400);
-                Validator.isNotNull(player.getName(), "name is null", 400);
+                Validator.isNotNull(player, "player is null", BAD_REQUEST);
+                Validator.isNotNull(player.getName(), "name is null", BAD_REQUEST);
                 Validator.isNotEmpty(player.getName(), "name is empty");
 
                 game.addPlayer(new Player(player.getName(),new Board()));
-                Response response = new Response(200, "Success!");
+                Response response = new Response(OK, "Player created successfully!");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -65,18 +66,19 @@ public class Server {
             @Override
             public void handler(HttpExchange exchange) {
                 Ninja ninja = Mapper.fromJson(exchange.getRequestBody(),Ninja.class);
-                Validator.isNotNull(ninja, "Ninja is null", 400);
+                Validator.isNotNull(ninja, "Ninja is null", BAD_REQUEST);
                 ninja.validate();
-                Player player = game.getPlayer(0);//PLAYER_CLIENT
+                Player player = game.getPlayer(PLAYER_CLIENT);
                 Board board = player.getBoard();
 
                 Validator.isExpectedValue(board.getUnitAt(ninja.getX(), ninja.getY())
                         .getUnitType(), BLANK, "Location is already occupied");
-                Validator.isLowerThan(board.getAliveNinjas(),MAX_NINJAS,
+                Validator.isHigherThan(board.getAliveNinjas(),MAX_NINJAS,
                         "Max number of ninjas reached: " + MAX_NINJAS);
 
                 board.setUnit(ninja);
-                Response response = new Response(200, "Success!");
+                Response response = new Response(OK, "Ninja received successfully!");
+
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -96,13 +98,12 @@ public class Server {
         server.createContext(MOVE_NINJA, new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
-                Movement Movement = Mapper.fromJson(exchange.getRequestBody(), Movement.class);
-                Validator.isNotNull(Movement, "Movement is null", 400);
-                Movement.validate();
-                game.getPlayer(PLAYER_CLIENT)
-                        .getBoard()
-                        .moveUnit(Movement);
-                Response response = new Response(200, "Success!");
+                Movement movement = Mapper.fromJson(exchange.getRequestBody(), Movement.class);
+                Validator.isNotNull(movement, "Movement is null", BAD_REQUEST);
+                movement.validate();
+                Board board = game.getPlayer(PLAYER_CLIENT).getBoard();
+                game.moveUnit(movement,board);
+                Response response = new Response(OK, "Movement was successfully!");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -113,11 +114,11 @@ public class Server {
             @Override
             public void handler(HttpExchange exchange) {
                 Attack attack = Mapper.fromJson(exchange.getRequestBody(), Attack.class);
-                Validator.isNotNull(attack, "attack is null", 400);
+                Validator.isNotNull(attack, "attack is null", BAD_REQUEST);
                 attack.validate();
-                game.attack(attack,PLAYER_CLIENT);
+                game.attack(attack,PLAYER_HOST);
 
-                Response response = new Response(200, "Success!");
+                Response response = new Response(OK, "Attack was successfully!");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -129,8 +130,7 @@ public class Server {
             public void handler(HttpExchange exchange) {
                 if (!game.getClientConnected()){
                     game.ClientConnected();
-
-                    Response response = new Response(200, "Success!");
+                    Response response = new Response(OK, "Connected successfully!");
                     HttpUtils.ok(Mapper.toJson(response), exchange);
                 }else {
                     HttpUtils.badRequest("Server is full",exchange);
@@ -138,5 +138,21 @@ public class Server {
             }
         });
     }
+
+    public void getUpdate() {
+        server.createContext(UPDATE, new CustomHandler() {
+            @Override
+            public void handler(HttpExchange exchange) {
+                if (game.turnIsOver(PLAYER_CLIENT)){
+                    Update update = game.getUpdate();
+                    Response response = new Response(OK, update);
+                    HttpUtils.ok(Mapper.toJson(response), exchange);
+                }else {
+                    HttpUtils.sendResponse(NO_CONTENT,"Host turn isn't over",exchange);
+                }
+            }
+        });
+    }
+
 
 }
