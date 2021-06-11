@@ -15,7 +15,7 @@ import static com.sabu.http.HttpUtils.OK;
 
 public class ClientServer {
 
-    private static final String ip = "127.0.0.1"; //Config.getIp();
+    private static final String ip = Config.getIp();
     private static final int port = Config.getPort();
     private HttpServer server;
     private ClientManager clientGameManager;
@@ -70,8 +70,8 @@ public class ClientServer {
                 if (!clientGameManager.isHostConnected()){
                     clientGameManager.setHostConnected(true);
                     InetSocketAddress hostAddress = exchange.getRemoteAddress();
-                    clientGameManager.setIp(hostAddress.getHostName());
-                    Response response = new Response(OK, "Connected successfully!", null);
+                    clientGameManager.setIp(Mapper.parseIp(hostAddress.getHostName()));
+                    Response response = new Response(OK, "Connected successfully!", null);//TODO cambiar
                     HttpUtils.ok(Mapper.toJson(response), exchange);
                 }else {
                     HttpUtils.badRequest("Server is full",exchange);

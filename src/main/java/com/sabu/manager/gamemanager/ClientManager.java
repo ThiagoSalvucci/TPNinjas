@@ -145,7 +145,7 @@ public class ClientManager  {
 
     public boolean connect() {
         Response response = requestManager.sendGet(CONFIRM_CONNECTION);
-        if (response == null ) {
+        if (response == null) {
             Printer.print("Failed to connect to server");
             return false;
         }
@@ -197,13 +197,21 @@ public class ClientManager  {
         return isHostConnected;
     }
 
-    public void waitForInvite(){
+    public  void waitForHost(){
 
-        while(!isHostConnected()){
+        int waitTime = 0;
+        while(!isHostConnected){
             try {
                 Thread.sleep(2500);
             }catch (Exception e){
                 System.out.println(e.getMessage());
+            }
+            waitTime++;
+            if (waitTime == 4){
+                Printer.print("Do you want to exit to connection menu? Y/N");
+                if (Input.scanChar("Y/N only","YN") == 'Y'){
+                    return;
+                }
             }
         }
     }

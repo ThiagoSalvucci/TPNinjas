@@ -24,4 +24,10 @@ public class Mapper {
         return gson.fromJson(new InputStreamReader(in), type);
     }
 
+
+
+    public static String parseIp(String ip) {
+       int num = ip.indexOf('.');
+       return ip.substring(0,num);
+    }
 }

@@ -69,7 +69,7 @@ public class Menu {
 
             }else {
 
-                clientManager.waitForInvite();
+                clientManager.waitForHost();
                 if (!clientManager.isHostConnected() && count == 10) {
                     scan = tryAgain();
                     count = 0;
