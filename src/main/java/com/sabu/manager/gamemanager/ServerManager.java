@@ -29,13 +29,12 @@ public class ServerManager {
     private GameController gameController;
     private RequestManager requestManager;
     private List<Action> actionList;
-    private String ip;
     private static boolean isClientConnected;
 
 
     public ServerManager() {
         gameController = new GameController();
-        requestManager = new RequestManager(ip);
+        requestManager = new RequestManager();
     }
 
     public void run(){
@@ -153,7 +152,7 @@ public class ServerManager {
     }
 
     public void setIp(String ip){
-        this.ip = ip;
+       requestManager.setIp(ip);
     }
 
     public Response confirmConnection(String ip){

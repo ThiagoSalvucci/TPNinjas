@@ -17,10 +17,10 @@ public class Menu {
         Printer.print("Host Server Start.....");
         char scan = 'Y';
         int count = 0;
+        new HostServer();
 
         while (!serverManager.isClientConnected() && scan == 'Y'){
-            new HostServer();
-
+            
             if (Input.getConnectionMode(messageHost).equals("Y")) {
 
                 serverManager.setIp(Input.getIp());

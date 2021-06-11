@@ -26,13 +26,13 @@ public class ClientManager  {
     private List<Action> actionList;
     private RequestManager requestManager;
     private Game clientGame;
-    private String ip;
+
     private boolean isHostConnected;
     private boolean inTurn;
     private boolean isGameOver;
 
     public ClientManager() {
-        requestManager = new RequestManager(this.ip);
+        requestManager = new RequestManager();
         actionList = new ArrayList<>();
         clientGame = new Game();
     }
@@ -186,7 +186,7 @@ public class ClientManager  {
     }
 
     public void setIp(String ip) {
-        this.ip = ip;
+        requestManager.setIp(ip);
     }
 
     public boolean isHostConnected() {
