@@ -19,8 +19,8 @@ public class Menu {
         int count = 0;
         new HostServer();
 
-        while (!serverManager.isClientConnected() && scan == 'Y'){
-            
+        while (!serverManager.isClientConnected() && scan == 'Y'){//PEDIR IPV4
+
             if (Input.getConnectionMode(messageHost).equals("Y")) {
 
                 serverManager.setIp(Input.getIp());
@@ -69,16 +69,11 @@ public class Menu {
 
             }else {
 
-                try {
-                    Thread.sleep(2500);
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
-                }
-
+                clientManager.waitForInvite();
                 if (!clientManager.isHostConnected() && count == 10) {
                     scan = tryAgain();
                     count = 0;
-                }else Printer.print("Invite received!!");
+                }
                 count++;
             }
 

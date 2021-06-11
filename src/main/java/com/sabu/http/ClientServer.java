@@ -19,7 +19,7 @@ public class ClientServer {
     private static final int port = Config.getPort();
     private HttpServer server;
     private ClientManager clientGameManager;
-    private static boolean isHostConnected;
+
 
     public ClientServer() {
         clientGameManager = new ClientManager();//TODO
@@ -33,6 +33,7 @@ public class ClientServer {
             e.printStackTrace();
         }
     }
+
 
 
     public void postHostEndTurn() {
@@ -66,8 +67,8 @@ public class ClientServer {
         server.createContext(CONFIRM_CONNECTION, new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
-                if (!isHostConnected){
-                    isHostConnected = true;
+                if (!clientGameManager.isHostConnected()){
+                    clientGameManager.setHostConnected(true);
                     InetSocketAddress hostAddress = exchange.getRemoteAddress();
                     clientGameManager.setIp(hostAddress.getHostName());
                     Response response = new Response(OK, "Connected successfully!", null);
@@ -80,9 +81,6 @@ public class ClientServer {
 
     }
 
-    public static boolean isIsHostConnected() {
-        return isHostConnected;
-    }
 
 
 

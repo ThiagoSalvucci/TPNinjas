@@ -37,6 +37,10 @@ public class ClientManager  {
         clientGame = new Game();
     }
 
+    public void setHostConnected(boolean hostConnected) {
+        isHostConnected = hostConnected;
+    }
+
     public void run(){
         setPlayer();
         setNinjas();
@@ -194,7 +198,8 @@ public class ClientManager  {
     }
 
     public void waitForInvite(){
-        while(isHostConnected()){
+
+        while(!isHostConnected()){
             try {
                 Thread.sleep(2500);
             }catch (Exception e){
