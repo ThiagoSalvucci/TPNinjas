@@ -18,8 +18,9 @@ public class MovementValidator extends ActionValidator {
 
     public void validateMove(Board board,Action action){
         Ninja ninja = action.getNinja();
-        Validator.isExpectedValue(board.getUnitAt(ninja.getX(), ninja.getY())
-                .getUnitType(), NINJA, "Not ninja in selected location");
+        char unitType = board.getUnitAt(ninja.getX(), ninja.getY()).getUnitType();
+
+        Validator.isTrue(unitType == NINJA || unitType == BOSS, "Not ninja in selected location");
         Validator.isTrue(ninja.isMovable(),"Ninjas has already moved last round!");
 
         int xDistance = Math.abs(action.getPosX() - ninja.getX());

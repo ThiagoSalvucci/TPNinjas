@@ -16,13 +16,14 @@ import static com.sabu.http.HttpUtils.OK;
 public class ClientServer {
 
     private static final String ip = Config.getIp();
-    private static final int port = Config.getPort();
+    public static final int port = 25566;  // Config.getPort() + 1;//Todo sacar +1
     private HttpServer server;
     private ClientManager clientGameManager;
 
 
+
     public ClientServer() {
-        clientGameManager = new ClientManager();//TODO
+        clientGameManager = new ClientManager();
         try {
             server = HttpServer.create(new InetSocketAddress(ip, port), 0);
             getConfirmConnection();
@@ -43,6 +44,7 @@ public class ClientServer {
                 Update update = Mapper.fromJson(exchange.getRequestBody(), Update.class);
                 UpdateValidator validator = new UpdateValidator();
                 validator.validate(update);
+                ClientManager.setInTurn(true);
                 clientGameManager.endTurn(update);
                 Response response = new Response(OK, "Success!", null);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
@@ -70,8 +72,8 @@ public class ClientServer {
                 if (!clientGameManager.isHostConnected()){
                     clientGameManager.setHostConnected(true);
                     InetSocketAddress hostAddress = exchange.getRemoteAddress();
-                    clientGameManager.setIp(Mapper.parseIp(hostAddress.getHostName()));
-                    Response response = new Response(OK, "Connected successfully!", null);//TODO cambiar
+                    clientGameManager.setIp(hostAddress.getHostName());//Mapper.parseIp(
+                    Response response = new Response(OK, "Connected successfully!", null);
                     HttpUtils.ok(Mapper.toJson(response), exchange);
                 }else {
                     HttpUtils.badRequest("Server is full",exchange);
@@ -80,8 +82,6 @@ public class ClientServer {
         });
 
     }
-
-
 
 
 

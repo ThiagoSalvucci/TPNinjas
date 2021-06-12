@@ -22,7 +22,7 @@ public class ServerGame extends Game {
 
     public ServerGame() {
         players = new ArrayList<>(MAX_PLAYERS);
-        players.add(new Player("host"));//todo sacar
+        players.add(new Player("host"));
     }
 
 

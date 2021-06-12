@@ -25,7 +25,7 @@ import static com.sabu.utils.Constants.*;
 public class HostServer {
     private static String ip = Config.getIp();
     private static int port = Config.getPort();
-
+    private ServerManager serverManager;
     private final GameController gameController;
     private HttpServer server;
 
@@ -33,12 +33,11 @@ public class HostServer {
 
     public HostServer() {
         gameController = new GameController();
-//        ip = Input.getIp(); // TODO descomentar
-//        port = Input.getPort();
+        serverManager = new ServerManager();
         try {
             server = HttpServer.create(new InetSocketAddress(ip, port), 0);
             getClientTurnOver();
-
+            getReady();
             postSetNinja();
             getConfirmConnection();
             postMoveNinja();
@@ -126,23 +125,28 @@ public class HostServer {
 
     }
 
-
-
-    public void getConfirmConnection() {
-        server.createContext(CONFIRM_CONNECTION, new CustomHandler() {
+    public void getReady() {
+        server.createContext(READY, new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
-                InetSocketAddress hostAddress = exchange.getRemoteAddress();
-                ServerManager server = new ServerManager();
-                Response response = server.confirmConnection(hostAddress.getHostName());
+                gameController.setClientReady(true);
+                Response response = new Response(OK,"Ready!",null);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
     }
 
-
-
-
+    public void getConfirmConnection() {
+        server.createContext(CONFIRM_CONNECTION, new CustomHandler() {
+            @Override
+            public void handler(HttpExchange exchange) {
+                String address =  exchange.getRemoteAddress().getHostName();
+                Response response = serverManager.confirmConnection(address);//Mapper.parseIp(adress);
+                HttpUtils.ok(Mapper.toJson(response), exchange);
+            }
+        });
+    }
+}
 //    public void getUpdate() {
 //        server.createContext(UPDATE, new CustomHandler() {
 //            @Override
@@ -157,6 +161,3 @@ public class HostServer {
 //            }
 //        });
 //    }
-
-
-}

@@ -12,7 +12,7 @@ import static com.sabu.utils.Constants.*;
 import static com.sabu.utils.Constants.NINJA;
 
 public class Game {
-    private Map<Integer,Player> players;
+    private static Map<Integer,Player> players;
 
 
 

@@ -30,7 +30,7 @@ public class Main {
                 }
             }
 
-            game.createPlayer();//TODO MOVER PRIMER
+            game.createPlayer();
             Printer.clearScreen();
             System.out.println("Game Start!");
 

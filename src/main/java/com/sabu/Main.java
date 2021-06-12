@@ -44,26 +44,3 @@ public class Main {
 
 
 
-
-//        if (Integer.parseInt(args[0]) == PLAYER_HOST) {
-//        ServerManager serverGameManager = new ServerManager();//TODO cambiar puertos para probar!
-//        Printer.clearScreen();
-//        new HostServer();
-//        System.out.println("Server Start.....");
-//        HostServer.waitForClient();
-//        serverGameManager.connect();
-//        Printer.clearScreen();
-//
-//        System.out.println("Game Start!");
-//        serverGameManager.setPlayer();
-//        serverGameManager.setNinjas();//TODO mover!
-//        Printer.clearScreen();
-//
-//    }else{
-//        ClientManager clientGameManager = new ClientManager();
-//
-//        clientGameManager.connect();
-//        clientGameManager.setPlayer();
-//    }
-//
-//}

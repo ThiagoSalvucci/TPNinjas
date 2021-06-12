@@ -30,7 +30,7 @@ public class Board {
         map[unit.getY()][unit.getX()] = unit;
         if(unit.getUnitType() == BOSS || unit.getUnitType() == NINJA){
             aliveNinjas++;
-        }//TODO cambiar
+        }
     }
 
     public Unit getUnitAt(int x, int y) {

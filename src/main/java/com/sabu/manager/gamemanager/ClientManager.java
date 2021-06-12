@@ -1,6 +1,7 @@
 package com.sabu.manager.gamemanager;
 
 import com.sabu.entities.Action;
+import com.sabu.entities.Board;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.entities.Player;
 import com.sabu.http.Response;
@@ -27,9 +28,10 @@ public class ClientManager  {
     private RequestManager requestManager;
     private Game clientGame;
 
-    private boolean isHostConnected;
-    private boolean inTurn;
-    private boolean isGameOver;
+    private static boolean isHostConnected;
+    private static boolean inTurn;
+    private static boolean isGameOver;
+
 
     public ClientManager() {
         requestManager = new RequestManager();
@@ -41,13 +43,20 @@ public class ClientManager  {
         isHostConnected = hostConnected;
     }
 
+    public static void setInTurn(boolean inTurn) {
+        ClientManager.inTurn = inTurn;
+    }
+
+    public static boolean isInTurn() {
+        return inTurn;
+    }
+
     public void run(){
         setPlayer();
         setNinjas();
-
+        requestManager.sendGet(READY);
         while (!isGameOver){
-            List<Action> actionList;
-            if(inTurn){
+            if(isInTurn()){
                 executeClientTurn();
                 inTurn = false;
                 requestManager.sendGet(END_TURN);
@@ -71,7 +80,7 @@ public class ClientManager  {
 
         for (Ninja n: ninjaList){
             Printer.print("What action do you want to do with ninja in: " +
-                    Translate.translateCharToNumber(n.getX().toString()) + n.getY());//todo revisar
+                    Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));//todo revisar
 
             Response exchange = null;
             while (actionList.size() < 3){
@@ -122,22 +131,26 @@ public class ClientManager  {
             name = Input.getName();
             exchange = requestManager.sendPost(name, CREATE_PLAYER);
         }
-        this.player = new Player(name);
+        this.player = new Player(name, new Board());
     }
 
 
     public void setNinjas() {
         int ninjas = 0;
+        Board board = this.player.getBoard();
         Response exchange = null;
-
+        Printer.printBoard(board);
         while(exchange == null || ninjas < MAX_NINJAS){
             boolean isBoss = ninjas == 0;
             Ninja ninja = Input.getNinja(isBoss);
             exchange =  requestManager.sendPost(ninja, SET_NINJA);
             if(exchange.getCode() == OK){
                 ninjas++;
-                this.player.getBoard().setUnit(ninja);
-            }else Printer.print(exchange.getBody() + " Try again!");
+                board.setUnit(ninja);
+            }else {
+                Printer.print(exchange.getMessage() + " Try again!");
+            }
+            Printer.printBoard(board);
         }
     }
 
@@ -162,7 +175,6 @@ public class ClientManager  {
         UpdateValidator validator = new UpdateValidator();
         validator.validate(update);
         update(update);
-        inTurn = true;
     }
 
     public void gameOver(String msg){
@@ -190,7 +202,7 @@ public class ClientManager  {
     }
 
     public void setIp(String ip) {
-        requestManager.setIp(ip);
+        requestManager.setIp(ip , 25565);
     }
 
     public boolean isHostConnected() {
@@ -207,7 +219,7 @@ public class ClientManager  {
                 System.out.println(e.getMessage());
             }
             waitTime++;
-            if (waitTime == 4){
+            if (waitTime == 10){
                 Printer.print("Do you want to exit to connection menu? Y/N");
                 if (Input.scanChar("Y/N only","YN") == 'Y'){
                     return;
@@ -215,6 +227,8 @@ public class ClientManager  {
             }
         }
     }
+
+
 
 }
 

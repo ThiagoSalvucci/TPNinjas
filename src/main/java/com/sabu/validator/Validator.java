@@ -18,13 +18,13 @@ public class Validator {
     }
 
     public static void isHigherThan(int number, int min, String message) {
-        if (number > min) {
+        if (number <= min) {
             throw new InvalidNumberException(message);
         }
     }
 
     public static void isLowerThan(int number, int max, String message) {
-        if (number < max) {
+        if (number >= max) {
             throw new InvalidNumberException(message);
         }
     }

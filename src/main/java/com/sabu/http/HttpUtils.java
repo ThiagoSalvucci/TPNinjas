@@ -16,8 +16,12 @@ public class HttpUtils {
     public static final int OK = 200;
     public static final int BAD_REQUEST = 400;
     public static final int NOT_FOUND = 404;
-    public static final int INTERNAL_SERVER_ERRPR = 500;
+    public static final int INTERNAL_SERVER_ERROR = 500;
     public static final int NO_CONTENT = 204;
+
+
+
+
     /**
      * Sends the response to the client with status 200, indicating success.
      *
@@ -93,7 +97,7 @@ public class HttpUtils {
             HttpResponse httpResponse = httpRequest.execute();
             int responseCode = httpResponse.getStatusCode();
             Object responseBody = Mapper.fromJson(httpResponse.parseAsString(), responseType);
-            response = new Response(responseCode,"TODO",responseBody);// TODO
+            response = new Response(responseCode,"Falta hacer msg superior",responseBody);// TODO
             httpResponse.disconnect();
         }catch (HttpResponseException e){
             Error error = Mapper.fromJson(e.getContent(),Error.class);

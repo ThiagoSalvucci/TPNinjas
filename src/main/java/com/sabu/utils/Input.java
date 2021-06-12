@@ -67,7 +67,7 @@ public class Input {
 
         while(attack == null) {
             try {
-                Printer.print("Enter location to" + action);
+                Printer.print("Enter location to " + action);
                 String response = scanner.nextLine();
                 response = response.toUpperCase(Locale.ROOT);
                 Validator.isTrue(response.matches("^[A-E][1-5]$"), "Invalid input");

@@ -37,21 +37,28 @@ public class ServerManager {
         requestManager = new RequestManager();
     }
 
+    public void setIp(String ip){
+        requestManager.setIp(ip, 25566);
+    }
+
     public void run(){
 
         gameController.setPlayer(Input.getName(),PLAYER_HOST);
         setNinjas();
+        gameController.setHostReady(true);
 
-        Random rand = new Random();
-        gameController.setPlayerInTurn(0);//rand.nextInt(2)
+
+        gameController.setPlayerInTurn(0);
         String response = "";
+
+        while (!gameController.isPlayerReady(PLAYER_HOST) || !gameController.isPlayerReady(PLAYER_CLIENT)){}
 
         while (!gameController.isGameOver()){
 
             if(gameController.isPlayerInTurn(PLAYER_HOST)){
                 Update update = executeHostTurn();
-                requestManager.sendPost(update,END_TURN);
                 gameController.setPlayerInTurn(PLAYER_CLIENT);
+                requestManager.sendPost(update,END_TURN);
             }
             response = gameController.checkIfGameOver();
         }
@@ -61,7 +68,7 @@ public class ServerManager {
 
     public Update executeHostTurn(){
         List<Ninja> unitList = gameController.getNinjas(PLAYER_HOST);
-        boolean success = false;
+
         Update update = new Update();
         Action action;
 
@@ -76,14 +83,13 @@ public class ServerManager {
 
         for (Ninja n: unitList){
             Printer.print("What action do you want to do with ninja in: " +
-                    Translate.translateCharToNumber(n.getX().toString()) + n.getY());//todo revisar
-
+                    Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));//todo revisar
+            boolean success = false;
             while (!success){
                 Board enemyBoard = new Board();
                 try {
                     char actionType = Input.scanChar(message,validChars);
                     if (actionType == ATTACK){
-
                         action = Input.getAction(n,ATTACK);
                         Mark mark = new Mark(action.getPosX(), action.getPosY());
                         response = gameController.attack(action,PLAYER_HOST);
@@ -102,11 +108,12 @@ public class ServerManager {
                         n.setMovable(true);
                         success = true;
                     }
+                    Printer.print(response);
                 }catch (Exception e){
                     Printer.print(e.getMessage());
                 }
+
             }
-            Printer.print(response);
         }
         return update;
     }
@@ -120,7 +127,7 @@ public class ServerManager {
                 System.out.println(e.getMessage());
             }
             waitTime++;
-            if (waitTime == 4){
+            if (waitTime == 10){
                 Printer.print("Do you want to exit to connection menu? Y/N");
                 if (Input.scanChar("Y/N only","YN") == 'Y'){
                     return;
@@ -135,6 +142,7 @@ public class ServerManager {
             System.out.println("Failed to connect to server");
             return false;
         }
+        isClientConnected = true;
         return true;
     }
 
@@ -151,14 +159,11 @@ public class ServerManager {
        }
     }
 
-    public void setIp(String ip){
-       requestManager.setIp(ip);
-    }
 
     public Response confirmConnection(String ip){
         if(!isClientConnected()){
             isClientConnected = true;
-            setIp(ip);
+            requestManager.setIp(ip, 25566);
             return new Response(OK, "Connected successfully!",null);
         }
         return new Response(BAD_REQUEST,"Server is full", null);
@@ -178,10 +183,10 @@ public class ServerManager {
     public void setNinjas() {
         int ninjas = 0;
         Player player = gameController.getPlayer(PLAYER_HOST);
-
+        Printer.printBoard(player.getBoard());
         while (ninjas < MAX_NINJAS) {
             boolean isBoss = ninjas == 0;
-            Printer.printBoard(player.getBoard());
+
             Ninja ninja = Input.getNinja(isBoss);
 
             try {
@@ -191,7 +196,7 @@ public class ServerManager {
                 System.out.println(e.getMessage());
                 System.out.println("Try again!");
             }
-
+            Printer.printBoard(player.getBoard());
         }
 
     }

@@ -15,8 +15,9 @@ import static com.sabu.utils.Constants.*;
 public class GameController {
     private Game game;
     private int playerInTurn;
-    private boolean isGameOver;
-
+    private static boolean isGameOver;
+    private static boolean isClientReady;
+    private boolean isHostReady;
 
     public GameController() {
         game = new Game();
@@ -111,5 +112,20 @@ public class GameController {
             msg = hostPlayer.getName() + " has lost the game!";
         }
         return msg;
+    }
+
+    public void setClientReady(boolean clientReady) {
+        isClientReady = clientReady;
+    }
+
+    public void setHostReady(boolean hostReady) {
+        isHostReady = hostReady;
+    }
+
+    public boolean isPlayerReady(int id) {
+        if (id == PLAYER_CLIENT){
+            return isClientReady;
+        }
+        return isHostReady;
     }
 }
