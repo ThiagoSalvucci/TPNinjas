@@ -28,6 +28,7 @@ public class ClientManager  {
     private RequestManager requestManager;
     private Game clientGame;
 
+    private static boolean isHostReady;
     private static boolean isHostConnected;
     private static boolean inTurn;
     private static boolean isGameOver;
@@ -55,6 +56,8 @@ public class ClientManager  {
         setPlayer();
         setNinjas();
         requestManager.sendGet(READY);
+        while (!isHostReady){}
+
         while (!isGameOver){
             if(isInTurn()){
                 executeClientTurn();
@@ -122,8 +125,6 @@ public class ClientManager  {
         return actionList;
     }
 
-
-
     public void setPlayer() {
         Response exchange = null;
         String name = "";
@@ -133,7 +134,6 @@ public class ClientManager  {
         }
         this.player = new Player(name, new Board());
     }
-
 
     public void setNinjas() {
         int ninjas = 0;
@@ -229,6 +229,8 @@ public class ClientManager  {
     }
 
 
-
+    public void setClientReady(boolean isReady) {
+        isHostReady = isReady;
+    }
 }
 

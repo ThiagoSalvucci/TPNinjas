@@ -14,14 +14,10 @@ import static com.sabu.utils.Constants.NINJA;
 public class Game {
     private static Map<Integer,Player> players;
 
-
-
     public Game() {
         players = new HashMap<>();
         players.put(PLAYER_CLIENT,new Player());
     }
-
-
 
     public Unit attack(Action attack, int attackedId){
         Board attackedBoard = players.get(attackedId).getBoard();
@@ -39,7 +35,6 @@ public class Game {
         return attackedUnit;
     }
 
-
     public void moveUnit(Action movement,int id) {
         Ninja ninja = movement.getNinja();
         Board board = players.get(id).getBoard();
@@ -49,28 +44,18 @@ public class Game {
         board.setUnit(ninja); // MOVE TO NEW LOCATION
     }
 
-
-
     /*End Actions*/
-
-
 
     public void addPlayer(Player player, int id){
         players.put(id,player);
     }
 
-
-
-
     public void setNinja(Ninja ninja, int id){
         players.get(id).getBoard().setUnit(ninja);
     }
 
-
     public Player getPlayer(int id) {
         return players.get(id);
     }
-
-
-
+    
 }

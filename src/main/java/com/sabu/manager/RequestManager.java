@@ -6,17 +6,13 @@ import com.sabu.utils.Config;
 
 public class RequestManager {
     private static String host;
-    public RequestManager() {
-
-    }
+    public RequestManager() {}
 
     public Response sendPost(Object object, String endpoint){
-       String host = this.host + endpoint;
         return HttpUtils.doPost(host + endpoint, object, Response.class);
     }
 
     public Response sendGet(String endpoint){
-        String host = this.host + endpoint;
         return HttpUtils.doGet(host + endpoint, Response.class);
     }
 

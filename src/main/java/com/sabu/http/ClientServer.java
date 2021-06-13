@@ -16,7 +16,7 @@ import static com.sabu.http.HttpUtils.OK;
 public class ClientServer {
 
     private static final String ip = Config.getIp();
-    public static final int port = 8000;  // Config.getPort() + 1;//Todo sacar +1
+    public static final int port = 25566;  // Config.getPort() + 1;//Todo sacar +1
     private HttpServer server;
     private ClientManager clientGameManager;
 
@@ -80,5 +80,17 @@ public class ClientServer {
         });
 
     }
+
+    public void getReady() {
+        server.createContext(READY, new CustomHandler() {
+            @Override
+            public void handler(HttpExchange exchange) {
+                clientGameManager.setClientReady(true);
+                Response response = new Response(OK,"Ready!",null);
+                HttpUtils.ok(Mapper.toJson(response), exchange);
+            }
+        });
+    }
+
 
 }

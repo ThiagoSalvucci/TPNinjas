@@ -30,14 +30,13 @@ public class ServerManager {
     private RequestManager requestManager;
     private static boolean isClientConnected;
 
-
     public ServerManager() {
         gameController = new GameController();
         requestManager = new RequestManager();
     }
 
     public void setIp(String ip){
-        requestManager.setIp(ip, 8080);
+        requestManager.setIp(ip, 25566);
     }
 
     public void run(){
@@ -199,9 +198,5 @@ public class ServerManager {
         }
 
     }
-
-
-
-
 
 }

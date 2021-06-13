@@ -121,11 +121,9 @@ public class Input {
         chars = chars.toUpperCase(Locale.ROOT);
         while (!response.matches("^[ "+ chars +"]$")){
             System.out.println(message);
-            response = scanner.nextLine();
+            response = scanner.nextLine().toUpperCase(Locale.ROOT);
         }
-
         return response.charAt(0);
     }
-
 
 }

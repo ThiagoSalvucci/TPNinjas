@@ -50,7 +50,6 @@ public class GameController {
         }
     }
 
-
     public String move(Action move, int id){
         Board board = game.getPlayer(PLAYER_CLIENT).getBoard();
         MovementValidator validator = new MovementValidator();
@@ -76,14 +75,9 @@ public class GameController {
         return "Success";
     }
 
-
     public boolean isPlayerInTurn(int id){
         return playerInTurn == id;
     }
-
-
-
-
 
     public boolean isGameOver() {
         return isGameOver;
@@ -92,7 +86,6 @@ public class GameController {
     public void setGameOver() {
         isGameOver = true;
     }
-
 
     public String checkIfGameOver() {
         Player clientPlayer = game.getPlayer(PLAYER_CLIENT);

@@ -10,7 +10,6 @@ public class Menu {
     private static final String messageHost = "Do you want to send an invite? else you will have to wait for client yo connect! Y/N";
     private static final String messageClient = "Do you want to try to connect to game Host? else you will have to wait for server to invite you! Y/N";
 
-
     public static boolean gameInitHost() {
         Printer.print("Starting game!");
         ServerManager serverManager = new ServerManager();
@@ -86,7 +85,6 @@ public class Menu {
         return true;
     }
 
-
     public static char selectionMenu(){
         Printer.print("Choose from these Actions");
         Printer.print("-------------------------\n");
@@ -95,7 +93,6 @@ public class Menu {
         Printer.print("3 - Exit Program");//
         return Input.scanChar("Only valid options are 1, 2 , 3","123");
     }
-
 
     public static char clientConnectionMenu() {
         Printer.print("Choose from these Actions");
