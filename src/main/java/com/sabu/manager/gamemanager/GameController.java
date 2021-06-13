@@ -16,7 +16,7 @@ public class GameController {
 
     private static GameController instance;
 
-    private Game game;
+    private volatile Game game;
     private int playerInTurn;
     private static boolean isGameOver;
     private static boolean isClientReady;
