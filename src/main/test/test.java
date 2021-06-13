@@ -1,4 +1,5 @@
 import com.sabu.entities.Board;
+import com.sabu.entities.pieces.Ninja;
 
 import static com.sabu.utils.Constants.*;
 
@@ -6,14 +7,25 @@ public class test {
 
     public static void main(String[] args) {
 
-        printBoard(new Board(), new Board());
+        Board enemyBoard = new Board();
+        enemyBoard.setUnit(new Ninja(true,0,0));
+        enemyBoard.setUnit(new Ninja(false,2,0));
+        enemyBoard.setUnit(new Ninja(false,1,3));
+
+
+        Board board = new Board();
+        board.setUnit(new Ninja(true,4,2));
+        board.setUnit(new Ninja(false,2,3));
+        board.setUnit(new Ninja(false,4,3));
+
+        printBoard(board, enemyBoard);
 
 
     }
 
     public static void printBoard(Board board, Board enemyBoard) {
         System.out.print("\tyour Board");
-        System.out.println("\t\t\t\t\t enemy Board");
+        System.out.println("\t\t\t\t\t Enemy Board");
         System.out.print("   A   B   C   D   E");
         System.out.println("\t\t   A   B   C   D   E");
         System.out.print(SPACE + HIGHLINE);

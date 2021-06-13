@@ -4,6 +4,7 @@ import com.sabu.entities.*;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.entities.pieces.Tile;
 import com.sabu.entities.pieces.Unit;
+import com.sabu.manager.gamemanager.ServerManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,11 +13,21 @@ import static com.sabu.utils.Constants.*;
 import static com.sabu.utils.Constants.NINJA;
 
 public class Game {
-    private static Map<Integer,Player> players;
+    private static Game instance;
 
-    public Game() {
+    private volatile static Map<Integer,Player> players;
+
+    private Game() {
         players = new HashMap<>();
         players.put(PLAYER_CLIENT,new Player());
+    }
+
+    public static Game getInstance(){
+        if(instance == null) {
+            instance = new Game();
+        }
+
+        return instance;
     }
 
     public Unit attack(Action attack, int attackedId){

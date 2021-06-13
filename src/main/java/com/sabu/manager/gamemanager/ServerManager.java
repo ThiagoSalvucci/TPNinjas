@@ -32,7 +32,7 @@ public class ServerManager {
 
     private GameController gameController;
     private RequestManager requestManager;
-    private static boolean isClientConnected;
+    private volatile boolean isClientConnected;
 
     private ServerManager() {
         this.gameController = GameController.getInstance();
@@ -87,14 +87,18 @@ public class ServerManager {
             message = "As your Ninja Boss is dead, you can only attack = 'A' or do nothing = 'N'";
             validChars = "AN";
         }
-
+        Board enemyBoard = new Board();
+        Board board;
         for (Ninja n: unitList){
-            Printer.print("What action do you want to do with ninja in: " +
-                    Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));//todo revisar
             boolean success = false;
             while (!success){
-                Board enemyBoard = new Board();
+                board = gameController.getPlayer(PLAYER_HOST).getBoard();
+
                 try {
+                    Printer.print("What action do you want to do with ninja in: " +
+                            Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));
+                    Printer.print(message);
+
                     char actionType = Input.scanChar(message,validChars);
                     if (actionType == ATTACK){
                         action = Input.getAction(n,ATTACK);
@@ -115,6 +119,7 @@ public class ServerManager {
                         n.setMovable(true);
                         success = true;
                     }
+                    Printer.printBoard(board,enemyBoard);
                     Printer.print(response);
                 }catch (Exception e){
                     Printer.print(e.getMessage());
@@ -125,7 +130,7 @@ public class ServerManager {
         return update;
     }
 
-    public static void waitForClient(){
+    public void waitForClient(){
         int waitTime = 0;
         while(!isClientConnected){
             try {

@@ -33,7 +33,6 @@ public class HostServer {
     public HostServer() {
         this.gameController = GameController.getInstance();
         try {
-
             server = HttpServer.create(new InetSocketAddress(ip, port), 0);
             getClientTurnOver();
             getReady();
@@ -42,7 +41,6 @@ public class HostServer {
             postMoveNinja();
             postAttackLocation();
             postSetPlayer();
-//            getUpdate();
             server.start();
             getClientEndTurn();
         } catch (IOException e) {
@@ -55,7 +53,7 @@ public class HostServer {
             @Override
             public void handler(HttpExchange exchange) {
                 gameController.setPlayerInTurn(PLAYER_HOST);
-                Response response = new Response(OK, "Success!", null);
+                Response response = new Response(OK, "Success!", "");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -67,7 +65,7 @@ public class HostServer {
             public void handler(HttpExchange exchange) {
                 String playerName = Mapper.fromJson(exchange.getRequestBody(),String.class);
                 String message = gameController.setPlayer(playerName,PLAYER_CLIENT);
-                Response response = new Response(OK, message,null);
+                Response response = new Response(OK, message,"");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -79,7 +77,7 @@ public class HostServer {
             public void handler(HttpExchange exchange) {
                 Ninja ninja = Mapper.fromJson(exchange.getRequestBody(), Ninja.class);
                 String message = gameController.setNinja(ninja,PLAYER_CLIENT);
-                Response response = new Response(OK, message,null);
+                Response response = new Response(OK, message,"");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -127,7 +125,7 @@ public class HostServer {
             @Override
             public void handler(HttpExchange exchange) {
                 gameController.setClientReady(true);
-                Response response = new Response(OK,"Ready!",null);
+                Response response = new Response(OK,"Ready!","");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });

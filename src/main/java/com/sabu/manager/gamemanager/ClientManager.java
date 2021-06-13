@@ -87,19 +87,20 @@ public class ClientManager  {
             message = "As your Ninja Boss is dead, you can only attack = 'A' or do nothing = 'N'";
             validChars = "AN";
         }
-
+        Board enemyBoard = new Board();
+        Board board = new Board();
         for (Ninja n: ninjaList){ //todo
-            Printer.print("What action do you want to do with ninja in: " +
-                    Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));//todo revisar
             boolean success = false;
             while (!success){
-                Board enemyBoard = new Board();
+                Response exchange = null;
+                Printer.print("What action do you want to do with ninja in: " +
+                        Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));//todo revisar
+                Printer.print(message);
+                char actionType = Input.scanChar(message,validChars);
                 try {
                     Printer.printBoard(playerBoard);
                     Response response = null;
-                    char actionType = Input.scanChar(message,validChars);
                     if (actionType == ATTACK){
-
                         action = Input.getAction(n,ATTACK);
                         Mark mark = new Mark(action.getPosX(), action.getPosY());
                         response = requestManager.sendPost(action,ATTACK_NINJA);
@@ -108,8 +109,8 @@ public class ClientManager  {
                             success = true;
                             n.setMovable(true);
                         }
-                        Response exchange = (Response) response.getBody();
-                        Printer.print(exchange.getMessage());
+                        exchange = (Response) response.getBody();
+
 
                     } else if (actionType == MOVE){
                         action = Input.getAction(n,MOVE);
@@ -118,13 +119,16 @@ public class ClientManager  {
                             n.setMovable(false);
                             executeAction(action);
                         }
-                        Response exchange = (Response) response.getBody();
-                        Printer.print(exchange.getMessage());
+                        exchange = (Response) response.getBody();
+
 
                     } else {
+                        Printer.print("Ninja didn't do anything D:");
                         n.setMovable(true);
                         success = true;
                     }
+                    Printer.printBoard(board,enemyBoard);
+                    Printer.print(exchange.getMessage());
 
                 } catch (Exception e) {
                     Printer.print(e.getMessage());

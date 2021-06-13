@@ -22,12 +22,9 @@ public class GameController {
     private static boolean isClientReady;
     private boolean isHostReady;
 
-
-    public GameController() {
-        game = new Game();
+    private GameController() {
+        game = Game.getInstance();
     }
-
-
 
     public static GameController getInstance(){
         if(instance == null) {

@@ -5,12 +5,13 @@ import com.sabu.entities.pieces.Tile;
 import com.sabu.entities.pieces.Unit;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.sabu.utils.Constants.*;
 
 public class Board {
-    private final Unit[][] map;
+    private volatile Unit[][] map;
     private int aliveNinjas;
 
     public Board() {
