@@ -43,7 +43,7 @@ public class ServerManager {
 
         gameController.setPlayer(Input.getName(),PLAYER_HOST);
         setNinjas();
-        gameController.setHostReady(true);
+        requestManager.sendGet(READY);
 
 
         gameController.setPlayerInTurn(0);
