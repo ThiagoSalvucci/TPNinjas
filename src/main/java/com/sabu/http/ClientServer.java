@@ -24,6 +24,7 @@ public class ClientServer {
             server = HttpServer.create(new InetSocketAddress(ip, port), 0);
             getConfirmConnection();
             postHostEndTurn();
+            postEndGame();
             getReady();
 
             server.start();
@@ -41,7 +42,7 @@ public class ClientServer {
                 validator.validate(update);
                 ClientManager.getInstance().setInTurn(true);
                 ClientManager.getInstance().endTurn(update);
-                Response response = new Response(OK, "Success!", null);
+                Response response = new Response(OK, "Success!", "");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -53,7 +54,7 @@ public class ClientServer {
             public void handler(HttpExchange exchange) {
                 String msg = Mapper.fromJson(exchange.getRequestBody(), String.class);
                 ClientManager.getInstance().gameOver(msg);
-                Response response = new Response(OK, "Success!", null);
+                Response response = new Response(OK, "Success!", "");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -68,7 +69,7 @@ public class ClientServer {
                     ClientManager.getInstance().setHostConnected(true);
                     InetSocketAddress hostAddress = exchange.getRemoteAddress();
                     ClientManager.getInstance().setIp(hostAddress.getHostName());
-                    Response response = new Response(OK, "Connected successfully!", null);
+                    Response response = new Response(OK, "Connected successfully!", "");
                     HttpUtils.ok(Mapper.toJson(response), exchange);
                 }else {
                     HttpUtils.badRequest("Server is full",exchange);
@@ -83,7 +84,7 @@ public class ClientServer {
             @Override
             public void handler(HttpExchange exchange) {
                 ClientManager.getInstance().setClientReady(true);
-                Response response = new Response(OK,"Ready!",null);
+                Response response = new Response(OK,"Ready!","");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
