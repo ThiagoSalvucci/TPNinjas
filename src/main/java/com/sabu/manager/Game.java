@@ -24,8 +24,11 @@ public class Game {
         Unit attackedUnit = attackedBoard.getUnitAt(attack.getPosX(), attack.getPosY());
         char attackedUnitType = attackedUnit.getUnitType();
 
-        if(attackedUnitType == BOSS){//TODO
+        if(attackedUnitType == BOSS){
            attackedUnit.hitUnit();
+            if (attackedUnit.getHp() == 0){
+                attackedBoard.setUnit(new Tile(false, attackedUnit.getX(), attackedUnit.getY()));
+            }
         }else if(attackedUnitType == NINJA){
             attackedBoard.setUnit(new Tile(false, attackedUnit.getX(), attackedUnit.getY()));
         }else if(attackedUnitType == BLANK){

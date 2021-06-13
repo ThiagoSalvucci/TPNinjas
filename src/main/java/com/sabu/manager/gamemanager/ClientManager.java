@@ -5,6 +5,8 @@ import com.sabu.entities.Board;
 import com.sabu.entities.pieces.Mark;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.entities.Player;
+import com.sabu.entities.pieces.Tile;
+import com.sabu.entities.pieces.Unit;
 import com.sabu.http.Response;
 import com.sabu.http.Update;
 import com.sabu.manager.Game;
@@ -29,7 +31,6 @@ public class ClientManager  {
     private Player player;
     private List<Action> actionList;
     private RequestManager requestManager;
-    private Game clientGame;
 
     private volatile boolean isHostReady;
     private volatile boolean isHostConnected;
@@ -40,7 +41,6 @@ public class ClientManager  {
     public ClientManager() {
         requestManager = new RequestManager();
         actionList = new ArrayList<>();
-        clientGame = new Game();
     }
 
     public static ClientManager getInstance(){
@@ -127,6 +127,7 @@ public class ClientManager  {
                     } else {
                         actionList.add(new Action(null,null,n,NOTHING));
                         n.setMovable(true);
+                        success = true;
                     }
 
                 } catch (Exception e) {
@@ -209,10 +210,25 @@ public class ClientManager  {
     public void executeAction(Action action){
         char actionType = action.getActionType();
         if(actionType == Constants.ATTACK){
-            clientGame.attack(action,PLAYER_HOST);
-        }else {
-            clientGame.moveUnit(action,PLAYER_HOST);
+            attack(action);
         }
+    }
+
+    private void attack(Action attack){
+            Board attackedBoard = player.getBoard();
+            Unit attackedUnit = attackedBoard.getUnitAt(attack.getPosX(), attack.getPosY());
+            char attackedUnitType = attackedUnit.getUnitType();
+
+            if(attackedUnitType == BOSS){
+                attackedUnit.hitUnit();
+                if (attackedUnit.getHp() == 0){
+                    attackedBoard.setUnit(new Tile(false, attackedUnit.getX(), attackedUnit.getY()));
+                }
+            }else if(attackedUnitType == NINJA){
+                attackedBoard.setUnit(new Tile(false, attackedUnit.getX(), attackedUnit.getY()));
+            }else if(attackedUnitType == BLANK){
+                attackedUnit.hitUnit();
+            }
     }
 
     public void setIp(String ip) {

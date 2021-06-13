@@ -34,7 +34,7 @@ public class ServerManager {
     private RequestManager requestManager;
     private static boolean isClientConnected;
 
-    public ServerManager() {
+    private ServerManager() {
         this.gameController = GameController.getInstance();
         requestManager = new RequestManager();
     }
