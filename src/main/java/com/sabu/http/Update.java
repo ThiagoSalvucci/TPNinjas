@@ -25,6 +25,4 @@ public class Update {
         this.actions = actions;
     }
 
-
-
 }

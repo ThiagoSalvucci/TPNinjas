@@ -28,7 +28,6 @@ import static com.sabu.utils.Constants.ATTACK;
 public class ServerManager {
     private GameController gameController;
     private RequestManager requestManager;
-    private List<Action> actionList;
     private static boolean isClientConnected;
 
 
@@ -38,7 +37,7 @@ public class ServerManager {
     }
 
     public void setIp(String ip){
-        requestManager.setIp(ip, 25566);
+        requestManager.setIp(ip, 8080);
     }
 
     public void run(){
@@ -154,7 +153,7 @@ public class ServerManager {
                gameController.setPlayer(name,PLAYER_HOST);
                isSuccesfull = true;
            }catch (ErrorException e){
-               Printer.print(e.getMessage() + " Try again!");
+               Printer.print(e.getMessage() + ", Try again!");
            }
        }
     }

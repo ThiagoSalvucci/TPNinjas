@@ -20,8 +20,6 @@ public class HttpUtils {
     public static final int NO_CONTENT = 204;
 
 
-
-
     /**
      * Sends the response to the client with status 200, indicating success.
      *
@@ -51,7 +49,6 @@ public class HttpUtils {
     public static void notFound(String response, HttpExchange exchange) {
         sendResponse(NOT_FOUND, response, exchange);
     }
-
 
 
     public static void sendResponse(int statusCode, String response, HttpExchange exchange) {
@@ -84,7 +81,6 @@ public class HttpUtils {
 
         return response;
     }
-
 
     public static Response doPost(String endpoint,Object body,Type responseType){
 

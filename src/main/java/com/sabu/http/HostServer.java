@@ -61,7 +61,6 @@ public class HostServer {
         });
     }
 
-
     public void postSetPlayer() {
         server.createContext(CREATE_PLAYER, new CustomHandler() {
             @Override
@@ -74,7 +73,6 @@ public class HostServer {
         });
     }
 
-
     public void postSetNinja() {
         server.createContext(SET_NINJA, new CustomHandler() {
             @Override
@@ -86,7 +84,6 @@ public class HostServer {
             }
         });
     }
-
 
     public void postMoveNinja() {
         server.createContext(MOVE_NINJA, new CustomHandler() {
@@ -147,17 +144,3 @@ public class HostServer {
         });
     }
 }
-//    public void getUpdate() {
-//        server.createContext(UPDATE, new CustomHandler() {
-//            @Override
-//            public void handler(HttpExchange exchange) {
-//                if (game.turnIsOver(PLAYER_HOST)){
-//                    Update update = game.getUpdate();
-//                    Response response = new Response(OK, update);
-//                    HttpUtils.ok(Mapper.toJson(response), exchange);
-//                }else {
-//                    HttpUtils.sendResponse(NO_CONTENT,"Enemy turn isn't over",exchange);
-//                }
-//            }
-//        });
-//    }

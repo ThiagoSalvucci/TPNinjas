@@ -16,7 +16,7 @@ import static com.sabu.http.HttpUtils.OK;
 public class ClientServer {
 
     private static final String ip = Config.getIp();
-    public static final int port = 25566;  // Config.getPort() + 1;//Todo sacar +1
+    public static final int port = 8000;  // Config.getPort() + 1;//Todo sacar +1
     private HttpServer server;
     private ClientManager clientGameManager;
 
@@ -35,8 +35,6 @@ public class ClientServer {
         }
     }
 
-
-
     public void postHostEndTurn() {
         server.createContext(END_TURN, new CustomHandler() {
             @Override
@@ -44,7 +42,7 @@ public class ClientServer {
                 Update update = Mapper.fromJson(exchange.getRequestBody(), Update.class);
                 UpdateValidator validator = new UpdateValidator();
                 validator.validate(update);
-                ClientManager.setInTurn(true);
+                clientGameManager.setInTurn(true);
                 clientGameManager.endTurn(update);
                 Response response = new Response(OK, "Success!", null);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
@@ -82,7 +80,5 @@ public class ClientServer {
         });
 
     }
-
-
 
 }

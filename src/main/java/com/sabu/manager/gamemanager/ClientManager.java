@@ -43,8 +43,8 @@ public class ClientManager  {
         isHostConnected = hostConnected;
     }
 
-    public static void setInTurn(boolean inTurn) {
-        ClientManager.inTurn = inTurn;
+    public synchronized void setInTurn(boolean turn) {
+        inTurn = turn;
     }
 
     public static boolean isInTurn() {
