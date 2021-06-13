@@ -19,15 +19,14 @@ public class Main {
             choice = Menu.selectionMenu();
             switch (choice) {
                 case '1':
-                    if (Menu.gameInitHost()) {//queres invitar o esperar Ninja que se conected
-                        ServerManager manager = new ServerManager();
-                        manager.run();
+                    ServerManager serverManager = Menu.gameInitHost();
+                    if (serverManager != null) {
+                        serverManager.run();
                     }
                     break;
-
                 case '2':
-                    if (Menu.gameInitClient()) {
-                        ClientManager manager = new ClientManager();
+                    ClientManager manager = Menu.gameInitClient();
+                    if (manager != null) {
                         manager.run();
                     }
                     break;
@@ -36,6 +35,7 @@ public class Main {
                     running = false;
             }
         }
+
 
     }
 }

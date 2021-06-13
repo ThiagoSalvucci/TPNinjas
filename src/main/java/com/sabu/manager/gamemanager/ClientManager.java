@@ -2,6 +2,7 @@ package com.sabu.manager.gamemanager;
 
 import com.sabu.entities.Action;
 import com.sabu.entities.Board;
+import com.sabu.entities.pieces.Mark;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.entities.Player;
 import com.sabu.http.Response;
@@ -12,6 +13,7 @@ import com.sabu.utils.*;
 import com.sabu.validator.UpdateValidator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -22,16 +24,17 @@ import static com.sabu.utils.Constants.ATTACK;
 
 public class ClientManager  {
 
-    private int port = Config.getPort();
+    private static ClientManager instance;
+
     private Player player;
     private List<Action> actionList;
     private RequestManager requestManager;
     private Game clientGame;
 
-    private static boolean isHostReady;
-    private static boolean isHostConnected;
-    private static boolean inTurn;
-    private static boolean isGameOver;
+    private volatile boolean isHostReady;
+    private volatile boolean isHostConnected;
+    private volatile boolean inTurn;
+    private volatile boolean isGameOver;
 
 
     public ClientManager() {
@@ -40,26 +43,30 @@ public class ClientManager  {
         clientGame = new Game();
     }
 
+    public static ClientManager getInstance(){
+        if(instance == null) {
+            instance = new ClientManager();
+        }
+
+        return instance;
+    }
+
     public void setHostConnected(boolean hostConnected) {
         isHostConnected = hostConnected;
     }
 
-    public synchronized void setInTurn(boolean turn) {
+    public void setInTurn(boolean turn) {
         inTurn = turn;
-    }
-
-    public static boolean isInTurn() {
-        return inTurn;
     }
 
     public void run(){
         setPlayer();
         setNinjas();
         requestManager.sendGet(READY);
-        while (!isHostReady){}
+        while (!isHostReady);
 
         while (!isGameOver){
-            if(isInTurn()){
+            if(inTurn){
                 executeClientTurn();
                 inTurn = false;
                 requestManager.sendGet(END_TURN);
@@ -68,7 +75,8 @@ public class ClientManager  {
     }
 
     public List<Action> executeClientTurn(){
-        List<Ninja> ninjaList = player.getBoard().getNinjas();
+        Board playerBoard = player.getBoard();
+        List<Ninja> ninjaList = playerBoard.getNinjas();
         List<Action> actionList = new ArrayList<>();
         Action action;
 
@@ -81,47 +89,53 @@ public class ClientManager  {
             validChars = "AN";
         }
 
-        for (Ninja n: ninjaList){
+        for (Ninja n: ninjaList){ //todo
             Printer.print("What action do you want to do with ninja in: " +
                     Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));//todo revisar
-
-            Response exchange = null;
-            while (actionList.size() < 3){
-
+            boolean success = false;
+            while (!success){
+                Board enemyBoard = new Board();
+                try {
+                    Printer.printBoard(playerBoard);
+                    Response response = null;
                     char actionType = Input.scanChar(message,validChars);
                     if (actionType == ATTACK){
 
                         action = Input.getAction(n,ATTACK);
-                        exchange = requestManager.sendPost(action,ATTACK_NINJA);
-                        if (exchange != null && exchange.getCode() == OK){
+                        Mark mark = new Mark(action.getPosX(), action.getPosY());
+                        response = requestManager.sendPost(action,ATTACK_NINJA);
+                        enemyBoard.setUnit(mark);
+                        if (response != null && response.getCode() == OK){
+                            success = true;
                             n.setMovable(true);
                             executeAction(action);
                             actionList.add(action);
-                        } else {
-                            Printer.print(exchange.getMessage());
                         }
+                        Printer.print(response.getMessage());
 
                     } else if (actionType == MOVE){
-
                         action = Input.getAction(n,MOVE);
-                        exchange = requestManager.sendPost(action,MOVE_NINJA);
-                       if (exchange != null && exchange.getCode() == OK){
-                           n.setMovable(false);
-                           executeAction(action);
-                           actionList.add(action);
-                       } else {
-                           Printer.print(exchange.getMessage());
-                       }
+                        response = requestManager.sendPost(action,MOVE_NINJA);
+                        if (response != null && response.getCode() == OK){
+                            n.setMovable(false);
+                            executeAction(action);
+                            actionList.add(action);
+                        } else {
+                            Printer.print(response.getMessage());
+                        }
 
                     } else {
                         actionList.add(new Action(null,null,n,NOTHING));
                         n.setMovable(true);
                     }
-                assert exchange != null;
-                Printer.print(exchange.getMessage());
-            }
 
+                } catch (Exception e) {
+                    Printer.print(e.getMessage());
+                }
+
+            }
         }
+
         return actionList;
     }
 
@@ -183,7 +197,7 @@ public class ClientManager  {
     }
 
     public void setUpdates(Update update){
-        actionList.addAll(update.getActions());
+        actionList = Collections.unmodifiableList(update.getActions());
     }
 
     public void setChanges(){
@@ -202,8 +216,9 @@ public class ClientManager  {
     }
 
     public void setIp(String ip) {
-        requestManager.setIp(ip , 25565);
+        requestManager.setIp(ip , Config.getPort());
     }
+
 
     public boolean isHostConnected() {
         return isHostConnected;
@@ -227,7 +242,6 @@ public class ClientManager  {
             }
         }
     }
-
 
     public void setClientReady(boolean isReady) {
         isHostReady = isReady;

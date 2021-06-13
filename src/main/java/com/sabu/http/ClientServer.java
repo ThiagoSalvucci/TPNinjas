@@ -14,20 +14,17 @@ import static com.sabu.http.HttpEndpoints.*;
 import static com.sabu.http.HttpUtils.OK;
 
 public class ClientServer {
-
     private static final String ip = Config.getIp();
-    public static final int port = 25566;  // Config.getPort() + 1;//Todo sacar +1
+    public static final int port = Config.getPort() + 1;
     private HttpServer server;
-    private ClientManager clientGameManager;
-
-
 
     public ClientServer() {
-        clientGameManager = new ClientManager();
+
         try {
             server = HttpServer.create(new InetSocketAddress(ip, port), 0);
             getConfirmConnection();
             postHostEndTurn();
+            getReady();
 
             server.start();
         } catch (IOException e) {
@@ -42,8 +39,8 @@ public class ClientServer {
                 Update update = Mapper.fromJson(exchange.getRequestBody(), Update.class);
                 UpdateValidator validator = new UpdateValidator();
                 validator.validate(update);
-                clientGameManager.setInTurn(true);
-                clientGameManager.endTurn(update);
+                ClientManager.getInstance().setInTurn(true);
+                ClientManager.getInstance().endTurn(update);
                 Response response = new Response(OK, "Success!", null);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
@@ -55,7 +52,7 @@ public class ClientServer {
             @Override
             public void handler(HttpExchange exchange) {
                 String msg = Mapper.fromJson(exchange.getRequestBody(), String.class);
-                clientGameManager.gameOver(msg);
+                ClientManager.getInstance().gameOver(msg);
                 Response response = new Response(OK, "Success!", null);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
@@ -67,10 +64,10 @@ public class ClientServer {
         server.createContext(CONFIRM_CONNECTION, new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
-                if (!clientGameManager.isHostConnected()){
-                    clientGameManager.setHostConnected(true);
+                if (!ClientManager.getInstance().isHostConnected()){
+                    ClientManager.getInstance().setHostConnected(true);
                     InetSocketAddress hostAddress = exchange.getRemoteAddress();
-                    clientGameManager.setIp(hostAddress.getHostName());//Mapper.parseIp(
+                    ClientManager.getInstance().setIp(hostAddress.getHostName());
                     Response response = new Response(OK, "Connected successfully!", null);
                     HttpUtils.ok(Mapper.toJson(response), exchange);
                 }else {
@@ -85,7 +82,7 @@ public class ClientServer {
         server.createContext(READY, new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
-                clientGameManager.setClientReady(true);
+                ClientManager.getInstance().setClientReady(true);
                 Response response = new Response(OK,"Ready!",null);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }

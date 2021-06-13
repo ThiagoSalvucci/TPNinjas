@@ -10,9 +10,9 @@ public class Menu {
     private static final String messageHost = "Do you want to send an invite? else you will have to wait for client yo connect! Y/N";
     private static final String messageClient = "Do you want to try to connect to game Host? else you will have to wait for server to invite you! Y/N";
 
-    public static boolean gameInitHost() {
+    public static ServerManager gameInitHost() {
         Printer.print("Starting game!");
-        ServerManager serverManager = new ServerManager();
+        ServerManager serverManager = ServerManager.getInstance();
         Printer.print("Host Server Start.....");
         char scan = 'Y';
         int count = 0;
@@ -24,8 +24,8 @@ public class Menu {
 
                 serverManager.setIp(Input.getIp());
                 if (!serverManager.connect()) {
-                      scan = tryAgain();
-                      if (scan == 'N') return false;
+                    scan = tryAgain();
+                    if (scan == 'N') return null;
                 }else {
                     Printer.print("Client connected!");
                 }
@@ -35,13 +35,13 @@ public class Menu {
                 serverManager.waitForClient();
                 if (!serverManager.isClientConnected() && count == 10) {
                     scan = tryAgain();
-                    if (scan == 'N') return false;
+                    if (scan == 'N') return null;
                     count = 0;
                 }else Printer.print("Client connected!");
                 count ++;
             }
         }
-        return true;
+        return serverManager;
     }
 
 
@@ -50,9 +50,9 @@ public class Menu {
         return Input.scanChar("Only Y/N", "YN");
     }
 
-    public static boolean gameInitClient() {
+    public static ClientManager gameInitClient() {
         Printer.print("Starting game!");
-        ClientManager clientManager = new ClientManager();
+        ClientManager clientManager = ClientManager.getInstance();
         new ClientServer();
         Printer.print("Client Server Start.....");
         char scan = 'Y';
@@ -65,7 +65,7 @@ public class Menu {
 
                 if (!clientManager.connect()) {
                     scan = tryAgain();
-                    if (scan == 'N') return false;
+                    if (scan == 'N') return null;
                 }else {
                     Printer.print("Connected to server!!");
                 }
@@ -74,15 +74,14 @@ public class Menu {
                 clientManager.waitForHost();
                 if (!clientManager.isHostConnected() && count == 10) {
                     scan = tryAgain();
-                    if (scan == 'N') return false;
+                    if (scan == 'N') return null;
                     count = 0;
                 }
                 count++;
             }
 
-
         }
-        return true;
+        return clientManager;
     }
 
     public static char selectionMenu(){
@@ -94,13 +93,5 @@ public class Menu {
         return Input.scanChar("Only valid options are 1, 2 , 3","123");
     }
 
-    public static char clientConnectionMenu() {
-        Printer.print("Choose from these Actions");
-        Printer.print("-------------------------\n");
-        Printer.print("1 - Host Ninja Game");//
-        Printer.print("2 - Connect to Ninja server");//
-
-        return Input.scanChar("Only valid options are 1, 2 , 3","123");
-    }
 }
 

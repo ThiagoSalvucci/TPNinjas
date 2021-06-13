@@ -25,16 +25,15 @@ import static com.sabu.utils.Constants.*;
 public class HostServer {
     private static String ip = Config.getIp();
     private static int port = Config.getPort();
-    private ServerManager serverManager;
+
     private final GameController gameController;
     private HttpServer server;
 
 
-
     public HostServer() {
-        gameController = new GameController();
-        serverManager = new ServerManager();
+        this.gameController = GameController.getInstance();
         try {
+
             server = HttpServer.create(new InetSocketAddress(ip, port), 0);
             getClientTurnOver();
             getReady();
@@ -45,6 +44,7 @@ public class HostServer {
             postSetPlayer();
 //            getUpdate();
             server.start();
+            getClientEndTurn();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -138,7 +138,7 @@ public class HostServer {
             @Override
             public void handler(HttpExchange exchange) {
                 String address =  exchange.getRemoteAddress().getHostName();
-                Response response = serverManager.confirmConnection(address);//Mapper.parseIp(adress);
+                Response response = ServerManager.getInstance().confirmConnection(address);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });

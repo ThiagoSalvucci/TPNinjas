@@ -13,14 +13,28 @@ import java.util.List;
 import static com.sabu.utils.Constants.*;
 
 public class GameController {
+
+    private static GameController instance;
+
     private Game game;
     private int playerInTurn;
     private static boolean isGameOver;
     private static boolean isClientReady;
     private boolean isHostReady;
 
+
     public GameController() {
         game = new Game();
+    }
+
+
+
+    public static GameController getInstance(){
+        if(instance == null) {
+            instance = new GameController();
+        }
+
+        return instance;
     }
 
     public void setPlayerInTurn(int playerInTurn) {

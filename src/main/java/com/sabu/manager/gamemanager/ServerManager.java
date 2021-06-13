@@ -8,6 +8,7 @@ import com.sabu.entities.pieces.Mark;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.entities.pieces.Tile;
 import com.sabu.exception.ErrorException;
+import com.sabu.http.ClientServer;
 import com.sabu.http.HttpUtils;
 import com.sabu.http.Response;
 import com.sabu.http.Update;
@@ -26,33 +27,41 @@ import static com.sabu.utils.Constants.*;
 import static com.sabu.utils.Constants.ATTACK;
 
 public class ServerManager {
+
+    private static ServerManager instance;
+
     private GameController gameController;
     private RequestManager requestManager;
     private static boolean isClientConnected;
 
     public ServerManager() {
-        gameController = new GameController();
+        this.gameController = GameController.getInstance();
         requestManager = new RequestManager();
     }
 
+    public static ServerManager getInstance(){
+        if(instance == null) {
+            instance = new ServerManager();
+        }
+
+        return instance;
+    }
+
     public void setIp(String ip){
-        requestManager.setIp(ip, 25566);
+        requestManager.setIp(ip, ClientServer.port);
     }
 
     public void run(){
-
         gameController.setPlayer(Input.getName(),PLAYER_HOST);
         setNinjas();
         requestManager.sendGet(READY);
 
-
         gameController.setPlayerInTurn(0);
         String response = "";
 
-        while (!gameController.isPlayerReady(PLAYER_HOST) || !gameController.isPlayerReady(PLAYER_CLIENT)){}
+        while (!gameController.isPlayerReady(PLAYER_CLIENT)){}
 
         while (!gameController.isGameOver()){
-
             if(gameController.isPlayerInTurn(PLAYER_HOST)){
                 Update update = executeHostTurn();
                 gameController.setPlayerInTurn(PLAYER_CLIENT);
