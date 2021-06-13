@@ -74,10 +74,9 @@ public class ClientManager  {
         }
     }
 
-    public List<Action> executeClientTurn(){
+    public void executeClientTurn(){
         Board playerBoard = player.getBoard();
         List<Ninja> ninjaList = playerBoard.getNinjas();
-        List<Action> actionList = new ArrayList<>();
         Action action;
 
         String message = "The only valid inputs are 'A' = Attack, 'M' = Move, 'N' = do nothing";
@@ -108,10 +107,9 @@ public class ClientManager  {
                         if (response != null && response.getCode() == OK){
                             success = true;
                             n.setMovable(true);
-                            executeAction(action);
-                            actionList.add(action);
                         }
-                        Printer.print(response.getMessage());
+                        Response exchange = (Response) response.getBody();
+                        Printer.print(exchange.getMessage());
 
                     } else if (actionType == MOVE){
                         action = Input.getAction(n,MOVE);
@@ -119,13 +117,11 @@ public class ClientManager  {
                         if (response != null && response.getCode() == OK){
                             n.setMovable(false);
                             executeAction(action);
-                            actionList.add(action);
-                        } else {
-                            Printer.print(response.getMessage());
                         }
+                        Response exchange = (Response) response.getBody();
+                        Printer.print(exchange.getMessage());
 
                     } else {
-                        actionList.add(new Action(null,null,n,NOTHING));
                         n.setMovable(true);
                         success = true;
                     }
@@ -136,8 +132,6 @@ public class ClientManager  {
 
             }
         }
-
-        return actionList;
     }
 
     public void setPlayer() {
@@ -211,6 +205,8 @@ public class ClientManager  {
         char actionType = action.getActionType();
         if(actionType == Constants.ATTACK){
             attack(action);
+        }else {
+
         }
     }
 
