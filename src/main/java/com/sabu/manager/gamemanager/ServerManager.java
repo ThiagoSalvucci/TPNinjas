@@ -46,7 +46,6 @@ public class ServerManager {
 
         return instance;
     }
-
     public void setIp(String ip){
         requestManager.setIp(ip, ClientServer.port);
     }
