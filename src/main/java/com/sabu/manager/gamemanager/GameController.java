@@ -62,12 +62,12 @@ public class GameController {
     }
 
     public String move(Action move, int id){
-        Board board = game.getPlayer(PLAYER_CLIENT).getBoard();
+        Player player = getPlayer(id);
+        Board board = player.getBoard();
         MovementValidator validator = new MovementValidator();
         validator.validate(move);
         validator.validateMove(board, move);
-
-        game.moveUnit(move, id);
+        game.moveUnit(move, board , player);
         return "Movement was succesfull";
     }
 
@@ -78,7 +78,7 @@ public class GameController {
     }
 
     public String setNinja(Ninja ninja, int id){
-        Player player = game.getPlayer(id);
+        Player player = getPlayer(id);
         Board board = player.getBoard();
         NinjaValidator validator = new NinjaValidator();
         validator.validate(ninja,board);

@@ -73,7 +73,7 @@ public class Input {
                 Validator.isTrue(response.matches("^[A-E][1-5]$"), "Invalid input");
 
                 int x = Translate.translateIntToChar(response.charAt(0),65);
-                int y = Translate.translateIntToChar(response.charAt(1),49);
+                int y = Translate.translateIntToChar(response.charAt(1),48) - 1;
                 attack = new Action(x,y,ninja,actionType);
 
 

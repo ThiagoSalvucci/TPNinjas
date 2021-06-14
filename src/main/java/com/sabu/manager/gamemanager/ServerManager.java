@@ -91,18 +91,17 @@ public class ServerManager {
         for (Ninja n: unitList){
             boolean success = false;
             while (!success){
-                board = gameController.getPlayer(PLAYER_HOST).getBoard();
-
                 try {
+                    board = gameController.getPlayer(PLAYER_HOST).getBoard();
                     Printer.print("What action do you want to do with ninja in: " +
-                            Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));
+                            Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));//TODO chequear FUNCIONABA
+                    Printer.printBoard(board,enemyBoard);
                     Printer.print(message);
-
                     char actionType = Input.scanChar(message,validChars);
                     if (actionType == ATTACK){
                         action = Input.getAction(n,ATTACK);
                         Mark mark = new Mark(action.getPosX(), action.getPosY());
-                        response = gameController.attack(action,PLAYER_HOST);
+                        response = gameController.attack(action,PLAYER_CLIENT);
                         enemyBoard.setUnit(mark);
                         n.setMovable(true);
                         update.addAction(action);
@@ -118,6 +117,7 @@ public class ServerManager {
                         n.setMovable(true);
                         success = true;
                     }
+                    Printer.clearScreen();
                     Printer.printBoard(board,enemyBoard);
                     Printer.print(response);
                 }catch (Exception e){

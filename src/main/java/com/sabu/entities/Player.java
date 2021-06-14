@@ -2,20 +2,12 @@ package com.sabu.entities;
 
 public class Player {
     private String name;
-    private Board board;
+    private volatile Board board;
 
     public Player(String name, Board board) {
         this.name = name;
         this.board = board;
     }
-    public Player(String name){
-        this.name = name;
-    }
-
-    public Player(){
-    }
-
-
 
     public String getName() {
         return name;
@@ -25,5 +17,7 @@ public class Player {
         return board;
     }
 
-
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 }

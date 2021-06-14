@@ -88,17 +88,18 @@ public class ClientManager  {
             validChars = "AN";
         }
         Board enemyBoard = new Board();
-        Board board = new Board();
-        for (Ninja n: ninjaList){ //todo
+
+        for (Ninja n: ninjaList){
             boolean success = false;
             while (!success){
-                Response exchange = null;
-                Printer.print("What action do you want to do with ninja in: " +
-                        Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));//todo revisar
-                Printer.print(message);
-                char actionType = Input.scanChar(message,validChars);
                 try {
-                    Printer.printBoard(playerBoard);
+                    playerBoard = player.getBoard();
+                    Printer.print("What action do you want to do with ninja in: " +
+                            Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));
+                    Printer.printBoard(playerBoard,enemyBoard);
+                    Printer.print(message);
+                    char actionType = Input.scanChar(message,validChars);
+
                     Response response = null;
                     if (actionType == ATTACK){
                         action = Input.getAction(n,ATTACK);
@@ -109,8 +110,6 @@ public class ClientManager  {
                             success = true;
                             n.setMovable(true);
                         }
-                        exchange = (Response) response.getBody();
-
 
                     } else if (actionType == MOVE){
                         action = Input.getAction(n,MOVE);
@@ -119,17 +118,18 @@ public class ClientManager  {
                             n.setMovable(false);
                             executeAction(action);
                         }
-                        exchange = (Response) response.getBody();
-
 
                     } else {
-                        Printer.print("Ninja didn't do anything D:");
                         n.setMovable(true);
                         success = true;
                     }
-                    Printer.printBoard(board,enemyBoard);
-                    Printer.print(exchange.getMessage());
-
+                    Printer.clearScreen();
+                    Printer.printBoard(playerBoard,enemyBoard);
+                    if (response != null){
+                        Printer.print(response.getMessage());
+                    } else {
+                        Printer.print("Ninja didn't do anything D:");
+                    }
                 } catch (Exception e) {
                     Printer.print(e.getMessage());
                 }
@@ -209,9 +209,18 @@ public class ClientManager  {
         char actionType = action.getActionType();
         if(actionType == Constants.ATTACK){
             attack(action);
-        }else {
-
+        } else {
+            move(action);
         }
+    }
+
+    private void move(Action move) {
+        Ninja ninja = move.getNinja();
+        Board board = player.getBoard();
+        board.setUnit(new Tile(false, ninja.getX(), ninja.getY()));// CLEAR PREVIOUS LOCATION
+        ninja.setX(move.getPosX()); //SET TO NEW LOCATION
+        ninja.setY(move.getPosY());
+        board.setUnit(ninja); // MOVE TO NEW LOCATION
     }
 
     private void attack(Action attack){

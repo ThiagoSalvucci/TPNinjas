@@ -93,7 +93,7 @@ public class HttpUtils {
             HttpResponse httpResponse = httpRequest.execute();
             int responseCode = httpResponse.getStatusCode();
             Object responseBody = Mapper.fromJson(httpResponse.parseAsString(), responseType);
-            response = new Response(responseCode,"Falta hacer msg superior",responseBody);// TODO
+            response = new Response(responseCode,"",responseBody);// TODO
             httpResponse.disconnect();
         }catch (HttpResponseException e){
             Error error = Mapper.fromJson(e.getContent(),Error.class);

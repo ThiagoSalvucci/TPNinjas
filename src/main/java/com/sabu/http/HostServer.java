@@ -100,7 +100,7 @@ public class HostServer {
             @Override
             public void handler(HttpExchange exchange) {
                 Action attack = Mapper.fromJson(exchange.getRequestBody(), Action.class);
-                String message = gameController.attack(attack,PLAYER_CLIENT);
+                String message = gameController.attack(attack,PLAYER_HOST);
                 Point point = new Point(attack.getPosX(), attack.getPosY());
                 Response response = new Response(OK, message,point);
                 HttpUtils.ok(Mapper.toJson(response), exchange);

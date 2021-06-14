@@ -19,7 +19,8 @@ public class Game {
 
     private Game() {
         players = new HashMap<>();
-        players.put(PLAYER_CLIENT,new Player());
+        players.put(PLAYER_HOST,null);
+        players.put(PLAYER_CLIENT,null);
     }
 
     public static Game getInstance(){
@@ -49,23 +50,19 @@ public class Game {
         return attackedUnit;
     }
 
-    public void moveUnit(Action movement,int id) {
+    public void moveUnit(Action movement,Board board , Player player) {
         Ninja ninja = movement.getNinja();
-        Board board = players.get(id).getBoard();
-        board.setUnit(new Tile(false, ninja.getY(), ninja.getX()));// CLEAR PREVIOUS LOCATION
+        board.setUnit(new Tile(false, ninja.getX(), ninja.getY()));// CLEAR PREVIOUS LOCATION
         ninja.setX(movement.getPosX()); //SET TO NEW LOCATION
         ninja.setY(movement.getPosY());
         board.setUnit(ninja); // MOVE TO NEW LOCATION
+        player.setBoard(board);
     }
 
     /*End Actions*/
 
     public void addPlayer(Player player, int id){
         players.put(id,player);
-    }
-
-    public void setNinja(Ninja ninja, int id){
-        players.get(id).getBoard().setUnit(ninja);
     }
 
     public Player getPlayer(int id) {
