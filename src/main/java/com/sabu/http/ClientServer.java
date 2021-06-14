@@ -14,8 +14,8 @@ import static com.sabu.http.HttpEndpoints.*;
 import static com.sabu.http.HttpUtils.OK;
 
 public class ClientServer {
+    public static final int port = Config.getPort();
     private static final String ip = Config.getIp();
-    public static final int port = Config.getPort() + 1;
     private HttpServer server;
 
     public ClientServer() {
@@ -61,18 +61,18 @@ public class ClientServer {
     }
 
 
-    public void getConfirmConnection(){
+    public void getConfirmConnection() {
         server.createContext(CONFIRM_CONNECTION, new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
-                if (!ClientManager.getInstance().isHostConnected()){
+                if (!ClientManager.getInstance().isHostConnected()) {
                     ClientManager.getInstance().setHostConnected(true);
                     InetSocketAddress hostAddress = exchange.getRemoteAddress();
                     ClientManager.getInstance().setIp(hostAddress.getHostName());
                     Response response = new Response(OK, "Connected successfully!", "");
                     HttpUtils.ok(Mapper.toJson(response), exchange);
-                }else {
-                    HttpUtils.badRequest("Server is full",exchange);
+                } else {
+                    HttpUtils.badRequest("Server is full", exchange);
                 }
             }
         });
@@ -84,7 +84,7 @@ public class ClientServer {
             @Override
             public void handler(HttpExchange exchange) {
                 ClientManager.getInstance().setClientReady(true);
-                Response response = new Response(OK,"Ready!","");
+                Response response = new Response(OK, "Ready!", "");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });

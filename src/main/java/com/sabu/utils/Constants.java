@@ -12,7 +12,6 @@ public class Constants {
 
     public static final char ATTACK = 'A';
     public static final char MOVE = 'M';
-    public static final char NOTHING = 'N';
 
     public static final String SPACE = " ";
     public static final String HIGHLINE = "---------------------";
@@ -20,7 +19,6 @@ public class Constants {
 
     public static final int PLAYER_HOST = 0;
     public static final int PLAYER_CLIENT = 1;
-    public static final int MAX_PLAYERS = 2;
     public static final int MAX_BOARD_SIZE = 5;
     public static final int MAX_NINJAS = 3;
 

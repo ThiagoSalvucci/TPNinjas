@@ -1,10 +1,7 @@
 package com.sabu.http;
 
 
-
-import com.sabu.entities.*;
-
-
+import com.sabu.entities.Action;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.manager.gamemanager.GameController;
 import com.sabu.manager.gamemanager.ServerManager;
@@ -17,14 +14,15 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-import static com.sabu.http.HttpUtils.*;
 import static com.sabu.http.HttpEndpoints.*;
-import static com.sabu.utils.Constants.*;
+import static com.sabu.http.HttpUtils.OK;
+import static com.sabu.utils.Constants.PLAYER_CLIENT;
+import static com.sabu.utils.Constants.PLAYER_HOST;
 
 
 public class HostServer {
-    private static String ip = Config.getIp();
-    private static int port = Config.getPort();
+    private static final String ip = Config.getIp();
+    private static final int port = Config.getPort();
 
     private final GameController gameController;
     private HttpServer server;
@@ -63,9 +61,9 @@ public class HostServer {
         server.createContext(CREATE_PLAYER, new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
-                String playerName = Mapper.fromJson(exchange.getRequestBody(),String.class);
-                String message = gameController.setPlayer(playerName,PLAYER_CLIENT);
-                Response response = new Response(OK, message,"");
+                String playerName = Mapper.fromJson(exchange.getRequestBody(), String.class);
+                String message = gameController.setPlayer(playerName, PLAYER_CLIENT);
+                Response response = new Response(OK, message, "");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -76,8 +74,8 @@ public class HostServer {
             @Override
             public void handler(HttpExchange exchange) {
                 Ninja ninja = Mapper.fromJson(exchange.getRequestBody(), Ninja.class);
-                String message = gameController.setNinja(ninja,PLAYER_CLIENT);
-                Response response = new Response(OK, message,"");
+                String message = gameController.setNinja(ninja, PLAYER_CLIENT);
+                Response response = new Response(OK, message, "");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -89,7 +87,7 @@ public class HostServer {
             public void handler(HttpExchange exchange) {
                 Action movement = Mapper.fromJson(exchange.getRequestBody(), Action.class);
                 gameController.move(movement, PLAYER_CLIENT);
-                Response response = new Response(OK, "Movement was successfully!",movement);
+                Response response = new Response(OK, "Movement was successfully!", movement);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -100,20 +98,20 @@ public class HostServer {
             @Override
             public void handler(HttpExchange exchange) {
                 Action attack = Mapper.fromJson(exchange.getRequestBody(), Action.class);
-                String message = gameController.attack(attack,PLAYER_HOST);
+                String message = gameController.attack(attack, PLAYER_HOST);
                 Point point = new Point(attack.getPosX(), attack.getPosY());
-                Response response = new Response(OK, message,point);
+                Response response = new Response(OK, message, point);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
     }
 
-    public void getClientTurnOver(){
+    public void getClientTurnOver() {
         server.createContext(END_TURN, new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
                 gameController.setPlayerInTurn(PLAYER_HOST);
-                Response response = new Response(OK, "Success!","");
+                Response response = new Response(OK, "Success!", "");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -124,8 +122,8 @@ public class HostServer {
         server.createContext(READY, new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
-                gameController.setClientReady(true);
-                Response response = new Response(OK,"Ready!","");
+                ServerManager.getInstance().setClientReady(true);
+                Response response = new Response(OK, "Ready!", "");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -135,7 +133,7 @@ public class HostServer {
         server.createContext(CONFIRM_CONNECTION, new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
-                String address =  exchange.getRemoteAddress().getHostName();
+                String address = exchange.getRemoteAddress().getHostName();
                 Response response = ServerManager.getInstance().confirmConnection(address);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }

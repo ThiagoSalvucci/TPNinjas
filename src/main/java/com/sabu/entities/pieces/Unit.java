@@ -1,11 +1,8 @@
 package com.sabu.entities.pieces;
 
-import com.sabu.validator.Validator;
-
 public abstract class Unit {
     private Integer x, y;
     private int hp;
-
 
 
     public Unit(Integer x, Integer y) {
@@ -13,12 +10,9 @@ public abstract class Unit {
         this.y = y;
         hp = 1;
     }
-    public Unit(){
 
-    }
+    public Unit() {
 
-    public void setHp(int hp) {
-        this.hp = hp;
     }
 
     public abstract char getUnitType();
@@ -45,5 +39,9 @@ public abstract class Unit {
 
     public int getHp() {
         return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
     }
 }

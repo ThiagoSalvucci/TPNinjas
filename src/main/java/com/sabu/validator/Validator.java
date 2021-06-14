@@ -40,6 +40,7 @@ public class Validator {
             throw new UnexpectedValueException(message);
         }
     }
+
     public static void isExpectedValue(String value, String expectedValue, String message) {
         if (value.equals(expectedValue)) {
             throw new UnexpectedValueException(message);
@@ -58,8 +59,8 @@ public class Validator {
         }
     }
 
-    public static void isTrue(boolean condition, String message){
-        if(!condition){
+    public static void isTrue(boolean condition, String message) {
+        if (!condition) {
             throw new UnexpectedValueException(message);
         }
     }

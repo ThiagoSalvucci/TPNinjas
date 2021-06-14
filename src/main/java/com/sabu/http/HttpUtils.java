@@ -16,8 +16,6 @@ public class HttpUtils {
     public static final int OK = 200;
     public static final int BAD_REQUEST = 400;
     public static final int NOT_FOUND = 404;
-    public static final int INTERNAL_SERVER_ERROR = 500;
-    public static final int NO_CONTENT = 204;
 
 
     /**
@@ -39,17 +37,6 @@ public class HttpUtils {
     public static void badRequest(String response, HttpExchange exchange) {
         sendResponse(BAD_REQUEST, response, exchange);
     }
-
-    /**
-     * Sends the response to the client with status 404, indicating that the recurse was not found.
-     *
-     * @param response The body of the response
-     * @param exchange The attributes
-     */
-    public static void notFound(String response, HttpExchange exchange) {
-        sendResponse(NOT_FOUND, response, exchange);
-    }
-
 
     public static void sendResponse(int statusCode, String response, HttpExchange exchange) {
         try {
@@ -73,7 +60,7 @@ public class HttpUtils {
             HttpResponse httpResponse = httpRequest.execute();
             int responseCode = httpResponse.getStatusCode();
             Object responseBody = Mapper.fromJson(httpResponse.parseAsString(), type);
-            response = new Response(responseCode,"",responseBody);//TODO
+            response = new Response(responseCode, "", responseBody);//TODO
             httpResponse.disconnect();
         } catch (IOException e) {
             System.out.println("Connection refused");
@@ -82,21 +69,21 @@ public class HttpUtils {
         return response;
     }
 
-    public static Response doPost(String endpoint,Object body,Type responseType){
+    public static Response doPost(String endpoint, Object body, Type responseType) {
 
         HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
         Response response = null;
         try {
-            HttpContent content = ByteArrayContent.fromString(null,Mapper.toJson(body));
-            HttpRequest httpRequest = requestFactory.buildPostRequest(new GenericUrl(endpoint),content);
+            HttpContent content = ByteArrayContent.fromString(null, Mapper.toJson(body));
+            HttpRequest httpRequest = requestFactory.buildPostRequest(new GenericUrl(endpoint), content);
             httpRequest.getHeaders().setContentType("application/json");
             HttpResponse httpResponse = httpRequest.execute();
             int responseCode = httpResponse.getStatusCode();
             Object responseBody = Mapper.fromJson(httpResponse.parseAsString(), responseType);
-            response = new Response(responseCode,"",responseBody);// TODO
+            response = new Response(responseCode, "", responseBody);// TODO
             httpResponse.disconnect();
-        }catch (HttpResponseException e){
-            Error error = Mapper.fromJson(e.getContent(),Error.class);
+        } catch (HttpResponseException e) {
+            Error error = Mapper.fromJson(e.getContent(), Error.class);
             response = new Response(error.getStatusCode(), error.getMessage(), error);
         } catch (IOException e) {
             System.out.println("Connection refused");
@@ -104,5 +91,4 @@ public class HttpUtils {
 
         return response;
     }
-
 }

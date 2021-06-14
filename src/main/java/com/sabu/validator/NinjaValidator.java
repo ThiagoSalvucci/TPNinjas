@@ -9,10 +9,10 @@ import static com.sabu.utils.Constants.MAX_NINJAS;
 
 public class NinjaValidator extends UnitValidator {
 
-    public void validate(Ninja ninja, Board board){
+    public void validate(Ninja ninja, Board board) {
         super.validate(ninja);
         Validator.isNotNull(ninja.isBoss(), "isBoss is null", BAD_REQUEST);
-        Validator.isLowerThan(board.getAliveNinjas(),MAX_NINJAS,
+        Validator.isLowerThan(board.getAliveNinjas(), MAX_NINJAS,
                 "Max number of ninjas reached: " + MAX_NINJAS);
         Validator.isExpectedValue(board.getUnitAt(ninja.getX(), ninja.getY())
                 .getUnitType(), BLANK, "Location is already occupied");

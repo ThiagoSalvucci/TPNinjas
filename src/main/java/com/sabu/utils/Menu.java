@@ -18,7 +18,7 @@ public class Menu {
         int count = 0;
         new HostServer();
 
-        while (!serverManager.isClientConnected() && scan == 'Y'){//PEDIR IPV4
+        while (!serverManager.isClientConnected() && scan == 'Y') {//PEDIR IPV4
 
             if (Input.getConnectionMode(messageHost).equals("Y")) {
 
@@ -26,26 +26,26 @@ public class Menu {
                 if (!serverManager.connect()) {
                     scan = tryAgain();
                     if (scan == 'N') return null;
-                }else {
+                } else {
                     Printer.print("Client connected!");
                 }
 
-            }else {
+            } else {
 
                 serverManager.waitForClient();
                 if (!serverManager.isClientConnected() && count == 10) {
                     scan = tryAgain();
                     if (scan == 'N') return null;
                     count = 0;
-                }else Printer.print("Client connected!");
-                count ++;
+                } else Printer.print("Client connected!");
+                count++;
             }
         }
         return serverManager;
     }
 
 
-    private static char tryAgain(){
+    private static char tryAgain() {
         Printer.print("Do you want to try again? Y/N");
         return Input.scanChar("Only Y/N", "YN");
     }
@@ -58,7 +58,7 @@ public class Menu {
         char scan = 'Y';
         int count = 0;
 
-        while (!clientManager.isHostConnected() && scan == 'Y'){
+        while (!clientManager.isHostConnected() && scan == 'Y') {
 
             if (Input.getConnectionMode(messageClient).equals("Y")) {
                 clientManager.setIp(Input.getIp());
@@ -66,11 +66,11 @@ public class Menu {
                 if (!clientManager.connect()) {
                     scan = tryAgain();
                     if (scan == 'N') return null;
-                }else {
+                } else {
                     Printer.print("Connected to server!!");
                 }
 
-            }else {
+            } else {
                 clientManager.waitForHost();
                 if (!clientManager.isHostConnected() && count == 10) {
                     scan = tryAgain();
@@ -84,13 +84,13 @@ public class Menu {
         return clientManager;
     }
 
-    public static char selectionMenu(){
+    public static char selectionMenu() {
         Printer.print("Choose from these Actions");
         Printer.print("-------------------------\n");
         Printer.print("1 - Host a Game");//
         Printer.print("2 - Connect to a server");//
         Printer.print("3 - Exit Program");//
-        return Input.scanChar("Only valid options are 1, 2 , 3","123");
+        return Input.scanChar("Only valid options are 1, 2 , 3", "123");
     }
 
 }

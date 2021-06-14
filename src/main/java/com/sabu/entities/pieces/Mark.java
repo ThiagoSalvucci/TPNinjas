@@ -1,6 +1,6 @@
 package com.sabu.entities.pieces;
 
-public class Mark extends Unit{
+public class Mark extends Unit {
 
     public Mark(Integer x, Integer y) {
         super(x, y);

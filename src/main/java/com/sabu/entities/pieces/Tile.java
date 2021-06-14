@@ -1,7 +1,5 @@
 package com.sabu.entities.pieces;
 
-import com.sabu.entities.pieces.Unit;
-
 import static com.sabu.utils.Constants.BLANK;
 import static com.sabu.utils.Constants.BROKE;
 

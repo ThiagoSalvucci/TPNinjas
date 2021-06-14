@@ -2,22 +2,20 @@ package com.sabu.manager;
 
 import com.sabu.http.HttpUtils;
 import com.sabu.http.Response;
-import com.sabu.utils.Config;
 
 public class RequestManager {
     private static String host;
-    public RequestManager() {}
 
-    public Response sendPost(Object object, String endpoint){
+    public Response sendPost(Object object, String endpoint) {
         return HttpUtils.doPost(host + endpoint, object, Response.class);
     }
 
-    public Response sendGet(String endpoint){
+    public Response sendGet(String endpoint) {
         return HttpUtils.doGet(host + endpoint, Response.class);
     }
 
-    public void setIp(String ip , int port){
-        this.host = "http://" + ip + ":" + port;
+    public void setIp(String ip, int port) {
+        host = "http://" + ip + ":" + port;
     }
 
 }

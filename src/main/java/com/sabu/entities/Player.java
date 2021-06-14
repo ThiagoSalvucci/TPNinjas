@@ -1,7 +1,7 @@
 package com.sabu.entities;
 
 public class Player {
-    private String name;
+    private final String name;
     private volatile Board board;
 
     public Player(String name, Board board) {

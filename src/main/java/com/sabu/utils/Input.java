@@ -13,20 +13,20 @@ import static com.sabu.utils.Constants.*;
 
 public class Input {
     private static final Properties properties = new Properties();
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
-    public static Point getBoardLocation(String message){
+    public static Point getBoardLocation(String message) {
         Point point = null;
-        while(point == null){
-            try{
+        while (point == null) {
+            try {
                 Printer.print(message);
                 String response = scanner.nextLine();
                 response = response.toUpperCase(Locale.ROOT);
                 Validator.isTrue(response.matches("^[A-E][1-5]$"), "Invalid input");
                 int x = (int) response.charAt(0) - 65;
                 int y = (int) response.charAt(1) - 49;
-                point = new Point(x,y);
-            }catch (Exception e){
+                point = new Point(x, y);
+            } catch (Exception e) {
                 Printer.print(e.getMessage());
             }
         }
@@ -37,18 +37,18 @@ public class Input {
         System.out.print("Insert your name: ");
         String response = scanner.nextLine();
 
-        while (response.trim().isEmpty()){
+        while (response.trim().isEmpty()) {
             Printer.print("Your name cannot be empty!, Try again");
             response = scanner.nextLine();
         }
         return response;
     }
 
-    public static String getConnectionMode(String message){
+    public static String getConnectionMode(String message) {
         Printer.print(message);
         String response = scanner.nextLine();
         response = response.toUpperCase(Locale.ROOT);
-        while (!response.matches("^[YN]$")){
+        while (!response.matches("^[YN]$")) {
             System.out.println("Invalid input,Only accepts Y/N");
             response = scanner.nextLine();
             response = response.toUpperCase(Locale.ROOT);
@@ -57,24 +57,23 @@ public class Input {
     }
 
 
-
-    public static Action getAction(Ninja ninja, char actionType){
+    public static Action getAction(Ninja ninja, char actionType) {
         Action attack = null;
         String action = "move";
-        if (actionType == ATTACK){
+        if (actionType == ATTACK) {
             action = "attack";
         }
 
-        while(attack == null) {
+        while (attack == null) {
             try {
                 Printer.print("Enter location to " + action);
                 String response = scanner.nextLine();
                 response = response.toUpperCase(Locale.ROOT);
                 Validator.isTrue(response.matches("^[A-E][1-5]$"), "Invalid input");
 
-                int x = Translate.translateIntToChar(response.charAt(0),65);
-                int y = Translate.translateIntToChar(response.charAt(1),48) - 1;
-                attack = new Action(x,y,ninja,actionType);
+                int x = Translate.translateIntToChar(response.charAt(0), 65);
+                int y = Translate.translateIntToChar(response.charAt(1), 48) - 1;
+                attack = new Action(x, y, ninja, actionType);
 
 
             } catch (Exception e) {
@@ -85,41 +84,40 @@ public class Input {
     }
 
 
-
-    public static Ninja getNinja(boolean isBoss){
+    public static Ninja getNinja(boolean isBoss) {
         String message = "Enter ninja location";
-        if(isBoss){
+        if (isBoss) {
             message = "Enter Ninja Boss location";
         }
         Point point = getBoardLocation(message);
-        Ninja ninja = new Ninja(isBoss, point.x, point.y);
-        return ninja;
+
+        return new Ninja(isBoss, point.x, point.y);
     }
 
 
-    public static String getIp(){
+    public static String getIp() {
         String response = "";
-        while (!response.matches(IP_REGEX)){
+        while (!response.matches(IP_REGEX)) {
             System.out.print("Please enter valid ip: ");
             response = scanner.nextLine();
         }
         return response;
     }
 
-    public static int getPort(){
+    public static int getPort() {
         String response = "";
-        while (!response.matches(PORT_REGEX)){
+        while (!response.matches(PORT_REGEX)) {
             System.out.print("Please enter valid port: ");
             response = scanner.nextLine();
         }
         return Integer.parseInt(response);
     }
 
-    public static char scanChar(String message, String chars){
+    public static char scanChar(String message, String chars) {
         String response = scanner.nextLine();
         response = response.toUpperCase(Locale.ROOT);
         chars = chars.toUpperCase(Locale.ROOT);
-        while (!response.matches("^[ "+ chars +"]$")){
+        while (!response.matches("^[ " + chars + "]$")) {
             System.out.println(message);
             response = scanner.nextLine().toUpperCase(Locale.ROOT);
         }
