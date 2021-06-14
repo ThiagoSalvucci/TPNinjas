@@ -22,12 +22,14 @@ public class Main {
                     ServerManager serverManager = Menu.gameInitHost();
                     if (serverManager != null) {
                         serverManager.run();
+                        running = false;
                     }
                     break;
                 case '2':
                     ClientManager manager = Menu.gameInitClient();
                     if (manager != null) {
                         manager.run();
+                        running = false;
                     }
                     break;
 

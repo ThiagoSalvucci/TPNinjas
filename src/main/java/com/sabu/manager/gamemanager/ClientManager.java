@@ -69,6 +69,7 @@ public class ClientManager  {
 
         while (!isGameOver){
             if(inTurn){
+                setChanges();
                 executeClientTurn();
                 inTurn = false;
                 requestManager.sendGet(END_TURN);
@@ -184,7 +185,6 @@ public class ClientManager  {
 
     public void update(Update update){
         setUpdates(update);
-        setChanges();
     }
 
     public void endTurn(Update update){
@@ -202,13 +202,13 @@ public class ClientManager  {
         actionList = Collections.unmodifiableList(update.getActions());
     }
 
-    public void setChanges(){
+    public synchronized void setChanges(){
         for (Action a: actionList) {
             executeAction(a);
         }
     }
 
-    public void executeAction(Action action){
+    public synchronized void executeAction(Action action){
         char actionType = action.getActionType();
         if(actionType == Constants.ATTACK){
             attack(action);
