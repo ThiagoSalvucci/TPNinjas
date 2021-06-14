@@ -22,9 +22,9 @@ import static com.sabu.utils.Constants.PLAYER_HOST;
 
 public class HostServer {
     private static final String ip = Config.getIp();
-    private static final int port = Config.getPort();
+    private static int port = Config.getPort();
 
-    private final GameController gameController;
+    private GameController gameController;
     private HttpServer server;
 
 
@@ -32,14 +32,13 @@ public class HostServer {
         this.gameController = GameController.getInstance();
         try {
             server = HttpServer.create(new InetSocketAddress(ip, port), 0);
-            getClientTurnOver();
             getReady();
-            postSetNinja();
+            getClientEndTurn();
             getConfirmConnection();
             postMoveNinja();
             postAttackLocation();
             postSetPlayer();
-            getClientEndTurn();
+            postSetNinja();
             server.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -106,17 +105,6 @@ public class HostServer {
         });
     }
 
-    public void getClientTurnOver() {
-        server.createContext(END_TURN, new CustomHandler() {
-            @Override
-            public void handler(HttpExchange exchange) {
-                gameController.setPlayerInTurn(PLAYER_HOST);
-                Response response = new Response(OK, "Success!", "");
-                HttpUtils.ok(Mapper.toJson(response), exchange);
-            }
-        });
-
-    }
 
     public void getReady() {
         server.createContext(READY, new CustomHandler() {

@@ -1,9 +1,9 @@
 package com.sabu.http;
 
 public class Response {
-    private final int code;
-    private final Object body;
-    private final String message;
+    private int code;
+    private  Object body;
+    private String message;
 
     public Response(int code, String message, Object body) {
         this.code = code;

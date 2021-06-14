@@ -27,8 +27,8 @@ public class ServerManager {
 
     private static ServerManager instance;
 
-    private final GameController gameController;
-    private final RequestManager requestManager;
+    private GameController gameController;
+    private RequestManager requestManager;
 
     private volatile boolean isClientConnected;
     private volatile boolean isClientReady;
@@ -53,12 +53,14 @@ public class ServerManager {
 
         gameController.setPlayerInTurn(0);
         String response = "";
-
+        Printer.print("Wait for client to be ready!");
         while (!isClientReady) ;
 
-        while (!gameController.isGameOver()) {
+        while (!GameController.isGameOver()) {
+
             if (gameController.isPlayerInTurn(PLAYER_HOST)) {
                 Update update = executeHostTurn();
+                Printer.print("Wait for client to end his turn!");
                 gameController.setPlayerInTurn(PLAYER_CLIENT);
                 requestManager.sendPost(update, END_TURN);
             }
@@ -83,7 +85,11 @@ public class ServerManager {
             validChars = MSG_VALID_CHARS2;
         }
         Board enemyBoard = new Board();
-        Board board;
+        Board board = gameController.getPlayer(PLAYER_HOST).getBoard();
+
+        Printer.clearScreen();
+        Printer.print("Its your turn!");
+        Printer.printBoard(board, enemyBoard);
         for (Ninja n : unitList) {
             boolean success = false;
             while (!success) {
@@ -123,6 +129,7 @@ public class ServerManager {
 
             }
         }
+        Printer.clearScreen();
         return update;
     }
 

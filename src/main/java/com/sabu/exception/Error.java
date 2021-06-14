@@ -1,8 +1,8 @@
 package com.sabu.exception;
 
 public class Error {
-    private final int statusCode;
-    private final String message;
+    private int statusCode;
+    private String message;
 
     public Error(String message, int statusCode) {
         this.statusCode = statusCode;

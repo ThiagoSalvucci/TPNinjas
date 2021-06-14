@@ -3,10 +3,10 @@ package com.sabu.entities;
 import com.sabu.entities.pieces.Ninja;
 
 public class Action {
-    private final Integer posX;
-    private final Integer posY;
-    private final Ninja ninja;
-    private final char actionType;
+    private  Integer posX;
+    private  Integer posY;
+    private  Ninja ninja;
+    private  char actionType;
 
     public Action(Integer posX, Integer posY, Ninja ninja, char action) {
         this.posX = posX;

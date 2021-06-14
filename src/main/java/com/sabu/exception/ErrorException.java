@@ -1,7 +1,7 @@
 package com.sabu.exception;
 
 public class ErrorException extends RuntimeException {
-    private final int statusCode;
+    private int statusCode;
 
     public ErrorException(String message, int statusCode) {
         super(message);

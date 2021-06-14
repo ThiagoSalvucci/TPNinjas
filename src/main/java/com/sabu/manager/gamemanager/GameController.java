@@ -19,8 +19,8 @@ public class GameController {
 
     private static GameController instance;
     private static boolean isGameOver;
-    private final Game game;
-    private int playerInTurn;
+    private volatile Game game;
+    private volatile int playerInTurn;
 
     private GameController() {
         game = Game.getInstance();
@@ -85,11 +85,11 @@ public class GameController {
 
 
         if (clientNinjas.isEmpty()) {
-            setGameOver();
+            isGameOver = true;
             msg = clientPlayer.getName() + " has lost the game!";
         }
         if (hostNinjas.isEmpty()) {
-            setGameOver();
+            isGameOver = true;
             msg = hostPlayer.getName() + " has lost the game!";
         }
         return msg;
@@ -99,12 +99,8 @@ public class GameController {
         return playerInTurn == id;
     }
 
-    public boolean isGameOver() {
+    public static boolean isGameOver() {
         return isGameOver;
-    }
-
-    public void setGameOver() {
-        isGameOver = true;
     }
 
     public void setPlayerInTurn(int playerInTurn) {

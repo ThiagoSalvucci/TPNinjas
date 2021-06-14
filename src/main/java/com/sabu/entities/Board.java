@@ -10,7 +10,7 @@ import java.util.List;
 import static com.sabu.utils.Constants.*;
 
 public class Board {
-    private final Unit[][] map;
+    private Unit[][] map;
     private int aliveNinjas;
 
     public Board() {

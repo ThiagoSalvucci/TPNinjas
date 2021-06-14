@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Update {
-    private final List<Action> actions;
-
+    private List<Action> actions;
 
     public Update() {
         actions = new ArrayList<>();
@@ -20,5 +19,4 @@ public class Update {
     public void addAction(Action action) {
         actions.add(action);
     }
-
 }

@@ -39,7 +39,7 @@ public class Printer {
 
     public static void printBoard(Board board, Board enemyBoard) {
         System.out.print("\tyour Board");
-        System.out.println("\t\t Enemy Board");
+        System.out.println("\t\t\tEnemy Board");
         System.out.print("   A   B   C   D   E");
         System.out.println("\t\t   A   B   C   D   E");
         System.out.print(SPACE + HIGHLINE);

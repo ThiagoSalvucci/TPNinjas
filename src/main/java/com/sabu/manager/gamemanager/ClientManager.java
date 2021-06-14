@@ -25,7 +25,7 @@ import static com.sabu.utils.Messages.*;
 public class ClientManager {
 
     private static ClientManager instance;
-    private final RequestManager requestManager;
+    private RequestManager requestManager;
     private Player player;
     private List<Action> actionList;
     private String gameOverReason = "";
@@ -52,14 +52,17 @@ public class ClientManager {
         setPlayer();
         setNinjas();
         requestManager.sendGet(READY);
+        Printer.print("Wait for Host to be ready!");
         while (!isHostReady) ;
 
         while (!isGameOver) {
             if (inTurn) {
                 setChanges();
                 executeClientTurn();
+                Printer.print("Wait for host to end his turn!");
                 inTurn = false;
                 requestManager.sendGet(END_TURN);
+
             }
         }
         Printer.print(gameOverReason);
@@ -67,7 +70,7 @@ public class ClientManager {
 
     public void executeClientTurn() {
         List<Ninja> ninjaList = player.getBoard().getNinjas();
-        Board playerBoard;
+
         Action action;
         String message = MSG_VALID_INPUTS1;
         String validChars = MSG_VALID_CHARS1;
@@ -78,7 +81,11 @@ public class ClientManager {
             validChars = MSG_VALID_CHARS2;
         }
         Board enemyBoard = new Board();
+        Board playerBoard = player.getBoard();
 
+        Printer.clearScreen();
+        Printer.print("Its your turn!");
+        Printer.printBoard(playerBoard, enemyBoard);
         for (Ninja n : ninjaList) {
             boolean success = false;
             while (!success) {
@@ -86,7 +93,6 @@ public class ClientManager {
                     playerBoard = player.getBoard();
                     Printer.print(MSG_REQUEST_ACTION +
                             Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));
-                    Printer.printBoard(playerBoard, enemyBoard);
                     Printer.print(message);
                     char actionType = Input.scanChar(message, validChars);
                     Response response = null;
@@ -129,6 +135,7 @@ public class ClientManager {
 
             }
         }
+        Printer.clearScreen();
     }
 
     public void setPlayer() {
