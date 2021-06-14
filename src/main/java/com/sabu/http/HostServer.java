@@ -41,8 +41,8 @@ public class HostServer {
             postMoveNinja();
             postAttackLocation();
             postSetPlayer();
-            server.start();
             getClientEndTurn();
+            server.start();
         } catch (IOException e) {
             e.printStackTrace();
         }

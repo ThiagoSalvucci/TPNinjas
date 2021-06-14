@@ -32,6 +32,8 @@ public class ClientManager  {
     private List<Action> actionList;
     private RequestManager requestManager;
 
+    private String gameOverReason = "";
+
     private volatile boolean isHostReady;
     private volatile boolean isHostConnected;
     private volatile boolean inTurn;
@@ -72,13 +74,13 @@ public class ClientManager  {
                 requestManager.sendGet(END_TURN);
             }
         }
+        Printer.print(gameOverReason);
     }
 
     public void executeClientTurn(){
-        Board playerBoard = player.getBoard();
-        List<Ninja> ninjaList = playerBoard.getNinjas();
+        List<Ninja> ninjaList = player.getBoard().getNinjas();
+        Board playerBoard;
         Action action;
-
         String message = "The only valid inputs are 'A' = Attack, 'M' = Move, 'N' = do nothing";
         String validChars = "AMN";
 
@@ -99,7 +101,6 @@ public class ClientManager  {
                     Printer.printBoard(playerBoard,enemyBoard);
                     Printer.print(message);
                     char actionType = Input.scanChar(message,validChars);
-
                     Response response = null;
                     if (actionType == ATTACK){
                         action = Input.getAction(n,ATTACK);
@@ -115,8 +116,9 @@ public class ClientManager  {
                         action = Input.getAction(n,MOVE);
                         response = requestManager.sendPost(action,MOVE_NINJA);
                         if (response != null && response.getCode() == OK){
-                            n.setMovable(false);
                             executeAction(action);
+                            n.setMovable(false);
+                            success = true;
                         }
 
                     } else {
@@ -124,6 +126,7 @@ public class ClientManager  {
                         success = true;
                     }
                     Printer.clearScreen();
+                    Printer.print("");
                     Printer.printBoard(playerBoard,enemyBoard);
                     if (response != null){
                         Printer.print(response.getMessage());
@@ -191,8 +194,8 @@ public class ClientManager  {
     }
 
     public void gameOver(String msg){
-       Printer.print(msg);
-       isGameOver = true;
+        gameOverReason = msg;
+        isGameOver = true;
     }
 
     public void setUpdates(Update update){
@@ -221,6 +224,7 @@ public class ClientManager  {
         ninja.setX(move.getPosX()); //SET TO NEW LOCATION
         ninja.setY(move.getPosY());
         board.setUnit(ninja); // MOVE TO NEW LOCATION
+        player.setBoard(board);
     }
 
     private void attack(Action attack){
@@ -238,6 +242,7 @@ public class ClientManager  {
             }else if(attackedUnitType == BLANK){
                 attackedUnit.hitUnit();
             }
+        player.setBoard(attackedBoard);
     }
 
     public void setIp(String ip) {

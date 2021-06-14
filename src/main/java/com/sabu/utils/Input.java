@@ -19,7 +19,7 @@ public class Input {
         Point point = null;
         while(point == null){
             try{
-                System.out.println(message);
+                Printer.print(message);
                 String response = scanner.nextLine();
                 response = response.toUpperCase(Locale.ROOT);
                 Validator.isTrue(response.matches("^[A-E][1-5]$"), "Invalid input");
@@ -27,7 +27,7 @@ public class Input {
                 int y = (int) response.charAt(1) - 49;
                 point = new Point(x,y);
             }catch (Exception e){
-                System.out.println(e.getMessage());
+                Printer.print(e.getMessage());
             }
         }
         return point;
@@ -38,7 +38,7 @@ public class Input {
         String response = scanner.nextLine();
 
         while (response.trim().isEmpty()){
-            System.out.println("Your name cannot be empty!, Try again");
+            Printer.print("Your name cannot be empty!, Try again");
             response = scanner.nextLine();
         }
         return response;
@@ -100,7 +100,7 @@ public class Input {
     public static String getIp(){
         String response = "";
         while (!response.matches(IP_REGEX)){
-            System.out.print("Please enter Ninja valid ip: ");
+            System.out.print("Please enter valid ip: ");
             response = scanner.nextLine();
         }
         return response;
@@ -109,7 +109,7 @@ public class Input {
     public static int getPort(){
         String response = "";
         while (!response.matches(PORT_REGEX)){
-            System.out.print("Please enter Ninja valid host port: ");
+            System.out.print("Please enter valid port: ");
             response = scanner.nextLine();
         }
         return Integer.parseInt(response);

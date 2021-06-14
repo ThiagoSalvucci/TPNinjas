@@ -31,8 +31,8 @@ public class Game {
         return instance;
     }
 
-    public Unit attack(Action attack, int attackedId){
-        Board attackedBoard = players.get(attackedId).getBoard();
+    public Unit attack(Action attack, Player attackedPlayer){
+        Board attackedBoard = attackedPlayer.getBoard();
         Unit attackedUnit = attackedBoard.getUnitAt(attack.getPosX(), attack.getPosY());
         char attackedUnitType = attackedUnit.getUnitType();
 
@@ -46,7 +46,7 @@ public class Game {
         }else if(attackedUnitType == BLANK){
             attackedUnit.hitUnit();
         }
-
+        attackedPlayer.setBoard(attackedBoard);
         return attackedUnit;
     }
 

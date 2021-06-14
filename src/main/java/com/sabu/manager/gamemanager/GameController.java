@@ -49,7 +49,8 @@ public class GameController {
     public String attack(Action attack, int id){
         AttackValidator validator = new AttackValidator();
         validator.validateAttack(attack);
-        Unit attackedUnit = game.attack(attack,id);
+        Player player = getPlayer(id);
+        Unit attackedUnit = game.attack(attack,player);
         char attackedUnitType = attackedUnit.getUnitType();
 
         if(attackedUnitType == BROKE || attackedUnitType == BLANK){
