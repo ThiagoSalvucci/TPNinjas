@@ -15,7 +15,7 @@ import static com.sabu.http.HttpUtils.OK;
 
 public class ClientServer {
     private static final String ip = Config.getIp();
-    public static final int port = Config.getPort() + 1;
+    public static final int port = Config.getPort();
     private HttpServer server;
 
     public ClientServer() {
