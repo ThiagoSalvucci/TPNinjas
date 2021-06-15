@@ -12,5 +12,4 @@ public class ErrorException extends RuntimeException {
         return new Error(getMessage(), statusCode);
     }
 
-
 }

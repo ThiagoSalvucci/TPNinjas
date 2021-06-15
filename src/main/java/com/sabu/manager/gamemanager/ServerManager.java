@@ -33,6 +33,8 @@ public class ServerManager {
     private volatile boolean isClientConnected;
     private volatile boolean isClientReady;
 
+
+
     private ServerManager() {
         this.gameController = GameController.getInstance();
         requestManager = new RequestManager();
@@ -51,14 +53,21 @@ public class ServerManager {
         setNinjas();
         requestManager.sendGet(READY);
 
-        gameController.setPlayerInTurn(0);
+
         String response = "";
         Printer.print("Wait for client to be ready!");
-        while (!isClientReady) ;
 
-        while (!GameController.isGameOver()) {
+        gameController.setRandomTurn();
+        if (!gameController.isHostInTurn()){
+            Update update = new Update();
+            requestManager.sendPost(update, END_TURN);
+        }
 
-            if (gameController.isPlayerInTurn(PLAYER_HOST)) {
+        while(!isClientReady);
+
+        while (!gameController.isGameOver()) {
+
+            if (gameController.isHostInTurn()) {
                 Update update = executeHostTurn();
                 Printer.print("Wait for client to end his turn!");
                 gameController.setPlayerInTurn(PLAYER_CLIENT);
@@ -129,7 +138,6 @@ public class ServerManager {
 
             }
         }
-        Printer.clearScreen();
         return update;
     }
 
@@ -186,17 +194,17 @@ public class ServerManager {
         if (!isClientConnected()) {
             isClientConnected = true;
             requestManager.setIp(ip, Config.getPort());
-            return new Response(OK, "Connected successfully!", null);
+            return new Response(OK, "Connected successfully!", "");
         }
-        return new Response(BAD_REQUEST, "Server is full", null);
+        return new Response(BAD_REQUEST, "Server is full", "");
     }
 
     public boolean isClientConnected() {
         return isClientConnected;
     }
 
-    public void setClientReady(boolean clientReady) {
-        isClientReady = clientReady;
+    public void setClientReady(boolean isReady){
+        isClientReady = isReady;
     }
 
     public void setIp(String ip) {

@@ -53,7 +53,7 @@ public class ClientManager {
         setNinjas();
         requestManager.sendGet(READY);
         Printer.print("Wait for Host to be ready!");
-        while (!isHostReady) ;
+        while (!isHostReady);
 
         while (!isGameOver) {
             if (inTurn) {
@@ -135,7 +135,6 @@ public class ClientManager {
 
             }
         }
-        Printer.clearScreen();
     }
 
     public void setPlayer() {

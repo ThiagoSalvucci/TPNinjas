@@ -70,7 +70,6 @@ public class HttpUtils {
     }
 
     public static Response doPost(String endpoint, Object body, Type responseType) {
-
         HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
         Response response = null;
         try {

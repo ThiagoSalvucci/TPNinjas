@@ -49,7 +49,7 @@ public class HostServer {
         server.createContext(END_TURN, new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
-                gameController.setPlayerInTurn(PLAYER_HOST);
+                GameController.getInstance().setPlayerInTurn(PLAYER_HOST);
                 Response response = new Response(OK, "Success!", "");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
@@ -104,7 +104,6 @@ public class HostServer {
             }
         });
     }
-
 
     public void getReady() {
         server.createContext(READY, new CustomHandler() {

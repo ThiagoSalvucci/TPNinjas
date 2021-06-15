@@ -9,4 +9,5 @@ public class HttpEndpoints {
     public static final String END_TURN = "/game/endturn";
     public static final String END_GAME = "/game/endgame";
     public static final String READY = "/game/ready";
+
 }

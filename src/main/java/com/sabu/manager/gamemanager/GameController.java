@@ -6,12 +6,14 @@ import com.sabu.entities.Player;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.entities.pieces.Unit;
 import com.sabu.manager.Game;
+import com.sabu.utils.Printer;
 import com.sabu.validator.AttackValidator;
 import com.sabu.validator.MovementValidator;
 import com.sabu.validator.NinjaValidator;
 import com.sabu.validator.Validator;
 
 import java.util.List;
+import java.util.Random;
 
 import static com.sabu.utils.Constants.*;
 
@@ -20,7 +22,7 @@ public class GameController {
     private static GameController instance;
     private static boolean isGameOver;
     private volatile Game game;
-    private volatile int playerInTurn;
+    private volatile static int playerInTurn;
 
     private GameController() {
         game = Game.getInstance();
@@ -95,16 +97,17 @@ public class GameController {
         return msg;
     }
 
-    public boolean isPlayerInTurn(int id) {
-        return playerInTurn == id;
+    public void setRandomTurn() {
+        Random random = new Random();
+        setPlayerInTurn(random.nextInt(2));
     }
 
     public static boolean isGameOver() {
         return isGameOver;
     }
 
-    public void setPlayerInTurn(int playerInTurn) {
-        this.playerInTurn = playerInTurn;
+    public synchronized void setPlayerInTurn(int playerInTurn) {
+        GameController.playerInTurn = playerInTurn;
     }
 
     public Player getPlayer(int id) {
@@ -114,4 +117,9 @@ public class GameController {
     public List<Ninja> getNinjas(int id) {
         return game.getPlayer(id).getBoard().getNinjas();
     }
+
+    public synchronized boolean isHostInTurn(){
+        return playerInTurn == PLAYER_HOST;
+    }
+
 }
