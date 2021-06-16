@@ -7,6 +7,7 @@ import com.sabu.entities.pieces.Mark;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.exception.ErrorException;
 import com.sabu.http.ClientServer;
+import com.sabu.http.HostServer;
 import com.sabu.http.Response;
 import com.sabu.http.Update;
 import com.sabu.manager.RequestManager;
@@ -30,13 +31,15 @@ public class ServerManager {
     private GameController gameController;
     private RequestManager requestManager;
 
-    private volatile boolean isClientConnected;
-    private volatile boolean isClientReady;
+    private volatile static boolean isClientConnected;
+    private volatile static boolean isClientReady;
 
 
 
     private ServerManager() {
         this.gameController = GameController.getInstance();
+        isClientConnected = false;
+        isClientReady = false;
         requestManager = new RequestManager();
     }
 
@@ -57,17 +60,13 @@ public class ServerManager {
         String response = "";
         Printer.print("Wait for client to be ready!");
 
-        gameController.setRandomTurn();
-        if (!gameController.isHostInTurn()){
-            Update update = new Update();
-            requestManager.sendPost(update, END_TURN);
-        }
-
         while(!isClientReady);
+        setTurn();
+
 
         while (!gameController.isGameOver()) {
 
-            if (gameController.isHostInTurn()) {
+            if (isHostInTurn()) {
                 Update update = executeHostTurn();
                 Printer.print("Wait for client to end his turn!");
                 gameController.setPlayerInTurn(PLAYER_CLIENT);
@@ -77,6 +76,14 @@ public class ServerManager {
         }
         requestManager.sendPost(response, END_GAME);
         Printer.print(response);
+    }
+
+    public void setTurn(){
+        gameController.setRandomTurn();
+        if (!isHostInTurn()){
+            Update update = new Update();
+            requestManager.sendPost(update, END_TURN);
+        }
     }
 
     public Update executeHostTurn() {
@@ -209,6 +216,10 @@ public class ServerManager {
 
     public void setIp(String ip) {
         requestManager.setIp(ip, ClientServer.port);
+    }
+
+    private boolean isHostInTurn() {
+        return gameController.getPlayerInTurn() == PLAYER_HOST;
     }
 
 }

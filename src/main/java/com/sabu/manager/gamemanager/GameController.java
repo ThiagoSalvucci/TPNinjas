@@ -102,7 +102,7 @@ public class GameController {
         setPlayerInTurn(random.nextInt(2));
     }
 
-    public static boolean isGameOver() {
+    public boolean isGameOver() {
         return isGameOver;
     }
 
@@ -118,8 +118,8 @@ public class GameController {
         return game.getPlayer(id).getBoard().getNinjas();
     }
 
-    public synchronized boolean isHostInTurn(){
-        return playerInTurn == PLAYER_HOST;
-    }
 
+    public synchronized int getPlayerInTurn(){
+        return playerInTurn;
+    }
 }

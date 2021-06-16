@@ -51,6 +51,7 @@ public class ClientManager {
     public void run() {
         setPlayer();
         setNinjas();
+
         requestManager.sendGet(READY);
         Printer.print("Wait for Host to be ready!");
         while (!isHostReady);
@@ -275,7 +276,7 @@ public class ClientManager {
         isHostConnected = hostConnected;
     }
 
-    public void setClientReady(boolean isReady) {
+    public void setHostReady(boolean isReady) {
         isHostReady = isReady;
     }
 }
