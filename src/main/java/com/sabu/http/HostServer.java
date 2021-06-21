@@ -2,6 +2,7 @@ package com.sabu.http;
 
 
 import com.sabu.entities.Action;
+import com.sabu.entities.Board;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.manager.gamemanager.GameController;
 import com.sabu.manager.gamemanager.ServerManager;
@@ -27,7 +28,6 @@ public class HostServer {
     private GameController gameController;
     private HttpServer server;
 
-
     public HostServer() {
         this.gameController = GameController.getInstance();
         try {
@@ -43,6 +43,10 @@ public class HostServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void stopServer(){
+        server.stop(0);
     }
 
     public void getClientEndTurn() {
@@ -97,7 +101,7 @@ public class HostServer {
             @Override
             public void handler(HttpExchange exchange) {
                 Action attack = Mapper.fromJson(exchange.getRequestBody(), Action.class);
-                String message = gameController.attack(attack, PLAYER_HOST);
+                String message = gameController.attack(attack, new Board(),PLAYER_HOST);// TODO
                 Point point = new Point(attack.getPosX(), attack.getPosY());
                 Response response = new Response(OK, message, point);
                 HttpUtils.ok(Mapper.toJson(response), exchange);

@@ -47,7 +47,7 @@ public class Menu {
 
     private static char tryAgain() {
         Printer.print("Do you want to try again? Y/N");
-        return Input.scanChar("Only Y/N", "YN");
+        return Input.getChar("Only Y/N", "YN");
     }
 
     public static ClientManager gameInitClient() {
@@ -90,7 +90,7 @@ public class Menu {
         Printer.print("1 - Host a Game");//
         Printer.print("2 - Connect to a server");//
         Printer.print("3 - Exit Program");//
-        return Input.scanChar("Only valid options are 1, 2 , 3", "123");
+        return Input.getChar("Only valid options are 1, 2 , 3", "123");
     }
 
 }

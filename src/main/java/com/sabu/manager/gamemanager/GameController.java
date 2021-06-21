@@ -3,6 +3,7 @@ package com.sabu.manager.gamemanager;
 import com.sabu.entities.Action;
 import com.sabu.entities.Board;
 import com.sabu.entities.Player;
+import com.sabu.entities.pieces.Mark;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.entities.pieces.Unit;
 import com.sabu.manager.Game;
@@ -36,18 +37,22 @@ public class GameController {
         return instance;
     }
 
-    public String attack(Action attack, int id) {
+    public String attack(Action attack, Board enemyBoard,int id) {
         AttackValidator validator = new AttackValidator();
-        validator.validateAttack(attack);
+
+        validator.validateAttack(attack, getPlayer(id).getBoard());
         Player player = getPlayer(id);
         Unit attackedUnit = game.attack(attack, player);
         char attackedUnitType = attackedUnit.getUnitType();
+        Mark mark = new Mark(attack.getPosX(), attack.getPosY());
 
         if (attackedUnitType == BROKE || attackedUnitType == BLANK) {
+            enemyBoard.setUnit(mark);
             return "Failed to hit!";
         } else if (attackedUnit.isUnitAlive() && attackedUnitType == BOSS) {
             return "Hit successfully!";
         } else {
+            enemyBoard.setUnit(mark);
             return "A ninja was killed!";
         }
     }

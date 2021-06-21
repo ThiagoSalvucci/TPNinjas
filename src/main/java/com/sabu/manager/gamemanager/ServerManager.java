@@ -7,7 +7,6 @@ import com.sabu.entities.pieces.Mark;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.exception.ErrorException;
 import com.sabu.http.ClientServer;
-import com.sabu.http.HostServer;
 import com.sabu.http.Response;
 import com.sabu.http.Update;
 import com.sabu.manager.RequestManager;
@@ -33,14 +32,16 @@ public class ServerManager {
 
     private volatile static boolean isClientConnected;
     private volatile static boolean isClientReady;
-
+    private static Board enemyBoard;
 
 
     private ServerManager() {
         this.gameController = GameController.getInstance();
+        requestManager = new RequestManager();
+        enemyBoard = new Board();
         isClientConnected = false;
         isClientReady = false;
-        requestManager = new RequestManager();
+
     }
 
     public static ServerManager getInstance() {
@@ -76,7 +77,17 @@ public class ServerManager {
         }
         requestManager.sendPost(response, END_GAME);
         Printer.print(response);
+
+      //  resetGame(); todo
     }
+
+//
+//    private void resetGame() {
+//        Printer.print("Do you want a rematch?");
+//        if(Input.getChar("Only valid options Y/N", MSG_VALID_CHARS3) == 'Y'){
+//        }
+//        isClientReady()
+//    }
 
     public void setTurn(){
         gameController.setRandomTurn();
@@ -100,7 +111,6 @@ public class ServerManager {
             message = MSG_VALID_INPUTS2;
             validChars = MSG_VALID_CHARS2;
         }
-        Board enemyBoard = new Board();
         Board board = gameController.getPlayer(PLAYER_HOST).getBoard();
 
         Printer.clearScreen();
@@ -115,12 +125,10 @@ public class ServerManager {
                             Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));
                     //Printer.printBoard(board,enemyBoard);
                     Printer.print(message);
-                    char actionType = Input.scanChar(message, validChars);
+                    char actionType = Input.getChar(message, validChars);
                     if (actionType == ATTACK) {
                         action = Input.getAction(n, ATTACK);
-                        Mark mark = new Mark(action.getPosX(), action.getPosY());
-                        response = gameController.attack(action, PLAYER_CLIENT);
-                        enemyBoard.setUnit(mark);
+                        response = gameController.attack(action,enemyBoard, PLAYER_CLIENT);
                         n.setMovable(true);
                         update.addAction(action);
                         success = true;
@@ -180,7 +188,7 @@ public class ServerManager {
             waitTime++;
             if (waitTime == 10) {
                 Printer.print(MSG_EXIT1);
-                if (Input.scanChar("Y/N only", MSG_VALID_CHARS3) == 'Y') {
+                if (Input.getChar("Y/N only", MSG_VALID_CHARS3) == 'Y') {
                     return;
                 }
             }
@@ -216,6 +224,10 @@ public class ServerManager {
 
     public void setIp(String ip) {
         requestManager.setIp(ip, ClientServer.port);
+    }
+
+    public static void setEnemyBoard(Board enemyBoard) {
+        ServerManager.enemyBoard = enemyBoard;
     }
 
     private boolean isHostInTurn() {

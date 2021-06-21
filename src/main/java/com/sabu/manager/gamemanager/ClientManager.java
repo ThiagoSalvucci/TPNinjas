@@ -30,6 +30,8 @@ public class ClientManager {
     private List<Action> actionList;
     private String gameOverReason = "";
 
+    private Board enemyBoard;
+
     private volatile boolean isHostReady;
     private volatile boolean isHostConnected;
     private volatile boolean inTurn;
@@ -38,6 +40,7 @@ public class ClientManager {
     public ClientManager() {
         requestManager = new RequestManager();
         actionList = new ArrayList<>();
+        enemyBoard = new Board();
     }
 
     public static ClientManager getInstance() {
@@ -71,7 +74,7 @@ public class ClientManager {
 
     public void executeClientTurn() {
         List<Ninja> ninjaList = player.getBoard().getNinjas();
-
+        Board playerBoard = player.getBoard();
         Action action;
         String message = MSG_VALID_INPUTS1;
         String validChars = MSG_VALID_CHARS1;
@@ -81,8 +84,8 @@ public class ClientManager {
             message = MSG_VALID_INPUTS2;
             validChars = MSG_VALID_CHARS2;
         }
-        Board enemyBoard = new Board();
-        Board playerBoard = player.getBoard();
+
+
 
         Printer.clearScreen();
         Printer.print("Its your turn!");
@@ -95,7 +98,7 @@ public class ClientManager {
                     Printer.print(MSG_REQUEST_ACTION +
                             Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));
                     Printer.print(message);
-                    char actionType = Input.scanChar(message, validChars);
+                    char actionType = Input.getChar(message, validChars);
                     Response response = null;
                     if (actionType == ATTACK) {
                         action = Input.getAction(n, ATTACK);
@@ -125,8 +128,7 @@ public class ClientManager {
                     Printer.printBoard(playerBoard, enemyBoard);
 
                     if (response != null) {
-                        Response exchange = (Response) response.getBody();
-                        Printer.print(exchange.getMessage());
+                        Printer.print(response.getMessage());
                     } else {
                         Printer.print(MSG_NO_ACTION);
                     }
@@ -207,7 +209,7 @@ public class ClientManager {
         }
     }
 
-    private void move(Action move) {
+    private void move(Action move) {//todo devolver tabla actualizada del sv
         Ninja ninja = move.getNinja();
         Board board = player.getBoard();
         board.setUnit(new Tile(false, ninja.getX(), ninja.getY()));// CLEAR PREVIOUS LOCATION
@@ -217,7 +219,7 @@ public class ClientManager {
         player.setBoard(board);
     }
 
-    private void attack(Action attack) {
+    private void attack(Action attack) {//todo devolver tabla actualizada del sv
         Board attackedBoard = player.getBoard();
         Unit attackedUnit = attackedBoard.getUnitAt(attack.getPosX(), attack.getPosY());
         char attackedUnitType = attackedUnit.getUnitType();
@@ -249,7 +251,7 @@ public class ClientManager {
             waitTime++;
             if (waitTime == 10) {
                 Printer.print(MSG_EXIT1);
-                if (Input.scanChar("Y/N only", MSG_VALID_CHARS3) == 'Y') {
+                if (Input.getChar("Y/N only", MSG_VALID_CHARS3) == 'Y') {
                     return;
                 }
             }

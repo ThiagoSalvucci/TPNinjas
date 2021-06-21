@@ -39,10 +39,10 @@ public class Game {
         if (attackedUnitType == BOSS) {
             attackedUnit.hitUnit();
             if (attackedUnit.getHp() == 0) {
-                attackedBoard.setUnit(new Tile(false, attackedUnit.getX(), attackedUnit.getY()));
+                attackedBoard.setUnit(new Tile(true, attackedUnit.getX(), attackedUnit.getY()));
             }
         } else if (attackedUnitType == NINJA) {
-            attackedBoard.setUnit(new Tile(false, attackedUnit.getX(), attackedUnit.getY()));
+            attackedBoard.setUnit(new Tile(true, attackedUnit.getX(), attackedUnit.getY()));
         } else if (attackedUnitType == BLANK) {
             attackedUnit.hitUnit();
         }

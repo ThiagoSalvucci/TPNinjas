@@ -19,7 +19,6 @@ public class ClientServer {
     private HttpServer server;
 
     public ClientServer() {
-
         try {
             server = HttpServer.create(new InetSocketAddress(ip, port), 0);
             getConfirmConnection();
@@ -31,6 +30,10 @@ public class ClientServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void stopServer(){
+        server.stop(0);
     }
 
     public void postHostEndTurn() {
