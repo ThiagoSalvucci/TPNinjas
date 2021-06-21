@@ -3,7 +3,6 @@ package com.sabu.manager.gamemanager;
 import com.sabu.entities.Action;
 import com.sabu.entities.Board;
 import com.sabu.entities.Player;
-import com.sabu.entities.pieces.Mark;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.exception.ErrorException;
 import com.sabu.http.ClientServer;
@@ -77,17 +76,14 @@ public class ServerManager {
         }
         requestManager.sendPost(response, END_GAME);
         Printer.print(response);
-
-      //  resetGame(); todo
+        reset();
     }
 
-//
-//    private void resetGame() {
-//        Printer.print("Do you want a rematch?");
-//        if(Input.getChar("Only valid options Y/N", MSG_VALID_CHARS3) == 'Y'){
-//        }
-//        isClientReady()
-//    }
+    private void reset() {
+        isClientConnected = false;
+        isClientReady = false;
+        gameController.reset();
+    }
 
     public void setTurn(){
         gameController.setRandomTurn();

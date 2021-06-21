@@ -5,6 +5,9 @@ import com.sabu.http.HostServer;
 import com.sabu.manager.gamemanager.ClientManager;
 import com.sabu.manager.gamemanager.ServerManager;
 
+import static com.sabu.utils.Messages.MSG_VALID_CHARS3;
+import static com.sabu.utils.Messages.MSG_VALID_INPUTS3;
+
 public class Menu {
 
     private static final String messageHost = "Do you want to send an invite? else you will have to wait for client yo connect! Y/N";
@@ -93,5 +96,12 @@ public class Menu {
         return Input.getChar("Only valid options are 1, 2 , 3", "123");
     }
 
+    public static boolean rematch() {
+        Printer.print("Do you want a rematch? Y/N");
+        if (Input.getChar(MSG_VALID_INPUTS3, MSG_VALID_CHARS3) == 'Y'){
+            return true;
+        }
+        return false;
+    }
 }
 

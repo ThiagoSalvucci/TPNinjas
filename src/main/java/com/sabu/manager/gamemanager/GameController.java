@@ -127,4 +127,8 @@ public class GameController {
     public synchronized int getPlayerInTurn(){
         return playerInTurn;
     }
+
+    public void reset() {
+        isGameOver = false;
+    }
 }

@@ -70,6 +70,14 @@ public class ClientManager {
             }
         }
         Printer.print(gameOverReason);
+        reset();
+    }
+
+    private void reset() {
+        isHostReady = false;
+        isHostConnected = false;
+        isGameOver = false;
+        actionList = new ArrayList<>();
     }
 
     public void executeClientTurn() {
