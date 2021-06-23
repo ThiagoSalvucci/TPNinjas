@@ -133,7 +133,6 @@ public class ServerManager {
                     } else if (actionType == MOVE) {
                         action = Input.getAction(n, MOVE);
                         response = gameController.move(action, PLAYER_HOST);
-                        n.setMovable(false);
                         success = true;
                     } else {
                         //Do Nothing

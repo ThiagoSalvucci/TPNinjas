@@ -55,6 +55,7 @@ public class Game {
         Ninja ninja = movement.getNinja();
         board.setUnit(new Tile(false, ninja.getX(), ninja.getY()));// CLEAR PREVIOUS LOCATION
         Ninja newNinjaPos = new Ninja(ninja.isBoss(), movement.getPosX(),movement.getPosY());
+        newNinjaPos.setMovable(false);
         board.setUnit(newNinjaPos); // MOVE TO NEW LOCATION
         getPlayer(playerId).setBoard(board);
     }

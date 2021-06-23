@@ -127,9 +127,7 @@ public class ClientManager {
                         response = requestManager.sendPost(action, MOVE_NINJA);
                         if (response != null && response.getCode() == OK) {
                             executeAction(action);
-                            n.setMovable(false);
                             success = true;
-
                         }
 
                     } else {
@@ -228,7 +226,9 @@ public class ClientManager {
         Ninja ninja = move.getNinja();
         Board board = player.getBoard();
         board.setUnit(new Tile(false, ninja.getX(), ninja.getY()));// CLEAR PREVIOUS LOCATION
-        board.setUnit(new Ninja(ninja.isBoss(), move.getPosX(), move.getPosY())); // MOVE TO NEW LOCATION
+        Ninja newNinjaPos = new Ninja(ninja.isBoss(), move.getPosX(), move.getPosY());
+        newNinjaPos.setMovable(false);
+        board.setUnit(newNinjaPos); // MOVE TO NEW LOCATION
         player.setBoard(board);
     }
 
