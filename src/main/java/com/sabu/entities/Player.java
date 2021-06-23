@@ -1,12 +1,16 @@
 package com.sabu.entities;
 
+import com.sabu.entities.pieces.Mark;
+
 public class Player {
     private String name;
     private volatile Board board;
+    private volatile Board enemyBoard;
 
     public Player(String name, Board board) {
         this.name = name;
         this.board = board;
+        enemyBoard = new Board();
     }
 
     public String getName() {
@@ -21,4 +25,11 @@ public class Player {
         this.board = board;
     }
 
+    public void setEnemyBoard(Board enemyBoard) {
+        this.enemyBoard = enemyBoard;
+    }
+
+    public Board getEnemyBoard() {
+        return enemyBoard;
+    }
 }

@@ -89,8 +89,7 @@ public class HostServer {
             @Override
             public void handler(HttpExchange exchange) {
                 Action movement = Mapper.fromJson(exchange.getRequestBody(), Action.class);
-                gameController.move(movement, PLAYER_CLIENT);
-                Response response = new Response(OK, "Movement was successfully!", movement);
+                Response response = gameController.move(movement, PLAYER_CLIENT);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -101,9 +100,7 @@ public class HostServer {
             @Override
             public void handler(HttpExchange exchange) {
                 Action attack = Mapper.fromJson(exchange.getRequestBody(), Action.class);
-                String message = gameController.attack(attack, new Board(),PLAYER_HOST);// TODO
-                Point point = new Point(attack.getPosX(), attack.getPosY());
-                Response response = new Response(OK, message, point);
+                Response response = gameController.attack(attack, gameController.getPlayer(PLAYER_CLIENT).getEnemyBoard(),PLAYER_HOST);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });

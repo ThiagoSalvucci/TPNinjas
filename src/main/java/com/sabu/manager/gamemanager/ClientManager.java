@@ -13,6 +13,7 @@ import com.sabu.manager.RequestManager;
 import com.sabu.utils.*;
 import com.sabu.validator.UpdateValidator;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,21 +27,18 @@ public class ClientManager {
 
     private static ClientManager instance;
     private RequestManager requestManager;
-    private Player player;
     private List<Action> actionList;
     private String gameOverReason = "";
-
-    private Board enemyBoard;
+    private volatile Player player;
 
     private volatile boolean isHostReady;
     private volatile boolean isHostConnected;
     private volatile boolean inTurn;
     private volatile boolean isGameOver;
 
-    public ClientManager() {
+    private ClientManager() {
         requestManager = new RequestManager();
         actionList = new ArrayList<>();
-        enemyBoard = new Board();
     }
 
     public static ClientManager getInstance() {
@@ -83,6 +81,7 @@ public class ClientManager {
     public void executeClientTurn() {
         List<Ninja> ninjaList = player.getBoard().getNinjas();
         Board playerBoard = player.getBoard();
+        Board enemyBoard = player.getEnemyBoard();
         Action action;
         String message = MSG_VALID_INPUTS1;
         String validChars = MSG_VALID_CHARS1;
@@ -110,10 +109,15 @@ public class ClientManager {
                     Response response = null;
                     if (actionType == ATTACK) {
                         action = Input.getAction(n, ATTACK);
-                        Mark mark = new Mark(action.getPosX(), action.getPosY());
                         response = requestManager.sendPost(action, ATTACK_NINJA);
-                        enemyBoard.setUnit(mark);
+
                         if (response != null && response.getCode() == OK) {
+                            Response exchange = (Response) response.getBody();
+                            if (exchange.getCode() != 1) {
+                                Mark mark = new Mark(action.getPosX(), action.getPosY());
+                                enemyBoard.setUnit(mark);
+                                player.setEnemyBoard(enemyBoard);
+                            }
                             success = true;
                             n.setMovable(true);
                         }
@@ -125,20 +129,23 @@ public class ClientManager {
                             executeAction(action);
                             n.setMovable(false);
                             success = true;
+
                         }
 
                     } else {
                         n.setMovable(true);
                         success = true;
+                        Printer.print(MSG_NO_ACTION);
                     }
                     Printer.clearScreen();
                     Printer.print("");
                     Printer.printBoard(playerBoard, enemyBoard);
 
-                    if (response != null) {
+                    if (response != null && response.getCode() == OK) {
+                        Response exchange = (Response) response.getBody();
+                        Printer.print(exchange.getMessage());
+                    } else if(response != null && response.getCode() != OK) {
                         Printer.print(response.getMessage());
-                    } else {
-                        Printer.print(MSG_NO_ACTION);
                     }
                 } catch (Exception e) {
                     Printer.print(e.getMessage());
@@ -221,9 +228,7 @@ public class ClientManager {
         Ninja ninja = move.getNinja();
         Board board = player.getBoard();
         board.setUnit(new Tile(false, ninja.getX(), ninja.getY()));// CLEAR PREVIOUS LOCATION
-        ninja.setX(move.getPosX()); //SET TO NEW LOCATION
-        ninja.setY(move.getPosY());
-        board.setUnit(ninja); // MOVE TO NEW LOCATION
+        board.setUnit(new Ninja(ninja.isBoss(), move.getPosX(), move.getPosY())); // MOVE TO NEW LOCATION
         player.setBoard(board);
     }
 
@@ -236,10 +241,10 @@ public class ClientManager {
             attackedUnit.hitUnit();
             Printer.print("Your Boss was hit!");
             if (attackedUnit.getHp() == 0) {
-                attackedBoard.setUnit(new Tile(false, attackedUnit.getX(), attackedUnit.getY()));
+                attackedBoard.setUnit(new Tile(true, attackedUnit.getX(), attackedUnit.getY()));
             }
         } else if (attackedUnitType == NINJA) {
-            attackedBoard.setUnit(new Tile(false, attackedUnit.getX(), attackedUnit.getY()));
+            attackedBoard.setUnit(new Tile(true, attackedUnit.getX(), attackedUnit.getY()));
         } else if (attackedUnitType == BLANK) {
             attackedUnit.hitUnit();
         }
@@ -275,7 +280,7 @@ public class ClientManager {
     }
 
     public void setUpdates(Update update) {
-        actionList = Collections.unmodifiableList(update.getActions());
+        actionList = new ArrayList<>(update.getActions());
     }
 
     public boolean isHostConnected() {

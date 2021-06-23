@@ -31,13 +31,12 @@ public class ServerManager {
 
     private volatile static boolean isClientConnected;
     private volatile static boolean isClientReady;
-    private static Board enemyBoard;
+
 
 
     private ServerManager() {
         this.gameController = GameController.getInstance();
         requestManager = new RequestManager();
-        enemyBoard = new Board();
         isClientConnected = false;
         isClientReady = false;
 
@@ -101,21 +100,24 @@ public class ServerManager {
 
         String message = MSG_VALID_INPUTS1;
         String validChars = MSG_VALID_CHARS1;
-        String response;
+        Response response;
 
         if (unitList.stream().noneMatch(Ninja::isBoss)) {
             message = MSG_VALID_INPUTS2;
             validChars = MSG_VALID_CHARS2;
         }
         Board board = gameController.getPlayer(PLAYER_HOST).getBoard();
+        Board enemyBoard = gameController.getPlayer(PLAYER_HOST).getEnemyBoard();
 
         Printer.clearScreen();
         Printer.print("Its your turn!");
+
         Printer.printBoard(board, enemyBoard);
         for (Ninja n : unitList) {
             boolean success = false;
             while (!success) {
                 try {
+                    enemyBoard = gameController.getPlayer(PLAYER_HOST).getEnemyBoard();
                     board = gameController.getPlayer(PLAYER_HOST).getBoard();
                     Printer.print(MSG_REQUEST_ACTION +
                             Translate.translateCharToNumber(n.getX().toString()) + (n.getY() + 1));
@@ -124,7 +126,7 @@ public class ServerManager {
                     char actionType = Input.getChar(message, validChars);
                     if (actionType == ATTACK) {
                         action = Input.getAction(n, ATTACK);
-                        response = gameController.attack(action,enemyBoard, PLAYER_CLIENT);
+                        response = gameController.attack(action, enemyBoard,PLAYER_CLIENT);
                         n.setMovable(true);
                         update.addAction(action);
                         success = true;
@@ -135,13 +137,13 @@ public class ServerManager {
                         success = true;
                     } else {
                         //Do Nothing
-                        response = MSG_NO_ACTION;
+                        response = new Response(0,MSG_NO_ACTION,null);
                         n.setMovable(true);
                         success = true;
                     }
                     Printer.clearScreen();
                     Printer.printBoard(board, enemyBoard);
-                    Printer.print(response);
+                    Printer.print(response.getMessage());
 
                 } catch (Exception e) {
                     Printer.print(e.getMessage());
@@ -220,10 +222,6 @@ public class ServerManager {
 
     public void setIp(String ip) {
         requestManager.setIp(ip, ClientServer.port);
-    }
-
-    public static void setEnemyBoard(Board enemyBoard) {
-        ServerManager.enemyBoard = enemyBoard;
     }
 
     private boolean isHostInTurn() {

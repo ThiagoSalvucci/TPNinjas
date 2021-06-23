@@ -31,8 +31,9 @@ public class Game {
         return instance;
     }
 
-    public Unit attack(Action attack, Player attackedPlayer) {
-        Board attackedBoard = attackedPlayer.getBoard();
+    public Unit attack(Action attack, int attackedPlayerId) {
+        Board attackedBoard = getPlayer(attackedPlayerId).getBoard();
+
         Unit attackedUnit = attackedBoard.getUnitAt(attack.getPosX(), attack.getPosY());
         char attackedUnitType = attackedUnit.getUnitType();
 
@@ -46,17 +47,16 @@ public class Game {
         } else if (attackedUnitType == BLANK) {
             attackedUnit.hitUnit();
         }
-        attackedPlayer.setBoard(attackedBoard);
+        getPlayer(attackedPlayerId).setBoard(attackedBoard);
         return attackedUnit;
     }
 
-    public void moveUnit(Action movement, Board board, Player player) {
+    public void moveUnit(Action movement, Board board, int playerId) {
         Ninja ninja = movement.getNinja();
         board.setUnit(new Tile(false, ninja.getX(), ninja.getY()));// CLEAR PREVIOUS LOCATION
-        ninja.setX(movement.getPosX()); //SET TO NEW LOCATION
-        ninja.setY(movement.getPosY());
-        board.setUnit(ninja); // MOVE TO NEW LOCATION
-        player.setBoard(board);
+        Ninja newNinjaPos = new Ninja(ninja.isBoss(), movement.getPosX(),movement.getPosY());
+        board.setUnit(newNinjaPos); // MOVE TO NEW LOCATION
+        getPlayer(playerId).setBoard(board);
     }
 
     /*End Actions*/
