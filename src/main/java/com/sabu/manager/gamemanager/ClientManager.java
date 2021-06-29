@@ -228,6 +228,7 @@ public class ClientManager {
         board.setUnit(new Tile(false, ninja.getX(), ninja.getY()));// CLEAR PREVIOUS LOCATION
         Ninja newNinjaPos = new Ninja(ninja.isBoss(), move.getPosX(), move.getPosY());
         newNinjaPos.setMovable(false);
+        newNinjaPos.setHp(ninja.getHp());
         board.setUnit(newNinjaPos); // MOVE TO NEW LOCATION
         player.setBoard(board);
     }
