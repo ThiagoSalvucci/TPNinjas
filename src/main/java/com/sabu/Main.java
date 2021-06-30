@@ -36,7 +36,6 @@ public class Main {
                     }
                     running = false;
                     break;
-
                 case '3':
                     running = false;
             }

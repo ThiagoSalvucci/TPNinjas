@@ -27,7 +27,7 @@ public class ClientManager {
 
     private static ClientManager instance;
     private RequestManager requestManager;
-    private List<Action> actionList;
+    private volatile List<Action> actionList;
     private String gameOverReason = "";
     private volatile Player player;
 
@@ -281,7 +281,8 @@ public class ClientManager {
     }
 
     public void setUpdates(Update update) {
-        actionList = new ArrayList<>(update.getActions());
+        actionList = new ArrayList<>();
+        actionList.addAll(update.getActions());
     }
 
     public boolean isHostConnected() {
