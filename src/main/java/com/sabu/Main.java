@@ -4,6 +4,7 @@ import com.sabu.manager.gamemanager.ClientManager;
 import com.sabu.manager.gamemanager.ServerManager;
 import com.sabu.utils.Config;
 import com.sabu.utils.Menu;
+import com.sabu.utils.Printer;
 
 
 public class Main {
@@ -11,6 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         Config.init();
+        boolean rematch = true;
         boolean running = true;
         char choice;
 
@@ -19,19 +21,21 @@ public class Main {
             switch (choice) {
                 case '1':
                     ServerManager serverManager = Menu.gameInitHost();
-                    if (serverManager != null) {
+
+                    while (serverManager != null && rematch) {
                         serverManager.run();
-                        running = false;
+                        rematch = Menu.rematch();
                     }
+                    running = false;
                     break;
                 case '2':
                     ClientManager manager = Menu.gameInitClient();
-                    if (manager != null) {
+                    while (manager != null && rematch) {
                         manager.run();
-                        running = false;
+                        rematch = Menu.rematch();
                     }
+                    running = false;
                     break;
-
                 case '3':
                     running = false;
             }

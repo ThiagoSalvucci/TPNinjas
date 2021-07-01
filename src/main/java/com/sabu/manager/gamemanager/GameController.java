@@ -3,8 +3,10 @@ package com.sabu.manager.gamemanager;
 import com.sabu.entities.Action;
 import com.sabu.entities.Board;
 import com.sabu.entities.Player;
+import com.sabu.entities.pieces.Mark;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.entities.pieces.Unit;
+import com.sabu.http.Response;
 import com.sabu.manager.Game;
 import com.sabu.utils.Printer;
 import com.sabu.validator.AttackValidator;
@@ -36,30 +38,47 @@ public class GameController {
         return instance;
     }
 
-    public String attack(Action attack, int id) {
-        AttackValidator validator = new AttackValidator();
-        validator.validateAttack(attack);
-        Player player = getPlayer(id);
-        Unit attackedUnit = game.attack(attack, player);
-        char attackedUnitType = attackedUnit.getUnitType();
 
+    public Response attack(Action attack, Board enemyBoard, int attackedPlayerId) {
+        AttackValidator validator = new AttackValidator();
+        validator.validateAttack(attack, getPlayer(attackedPlayerId).getBoard());
+
+        Unit attackedUnit = game.attack(attack, attackedPlayerId);
+        char attackedUnitType = attackedUnit.getUnitType();
+        Mark mark = new Mark(attack.getPosX(), attack.getPosY());
+
+
+        String message = "";
+        int code;
         if (attackedUnitType == BROKE || attackedUnitType == BLANK) {
-            return "Failed to hit!";
+            code = 0;
+            message = "Failed to hit!";
+            enemyBoard.setUnit(mark);
         } else if (attackedUnit.isUnitAlive() && attackedUnitType == BOSS) {
-            return "Hit successfully!";
+            code = 1;
+            message = "Hit successfully!";
         } else {
-            return "A ninja was killed!";
+            code = 0;
+            message = "A ninja was killed!";
+            enemyBoard.setUnit(mark);
         }
+
+        if (attackedPlayerId == PLAYER_HOST){
+            getPlayer(PLAYER_HOST).setEnemyBoard(enemyBoard);
+        } else {
+            getPlayer(PLAYER_CLIENT).setEnemyBoard(enemyBoard);
+        }
+        return new Response(code, message, attack);
     }
 
-    public String move(Action move, int id) {
+    public Response move(Action move, int id) {
         Player player = getPlayer(id);
         Board board = player.getBoard();
         MovementValidator validator = new MovementValidator();
         validator.validate(move);
         validator.validateMove(board, move);
-        game.moveUnit(move, board, player);
-        return "Movement was succesfull";
+        game.moveUnit(move, board, id);
+        return new Response(1,"Movement was succesfull",move);
     }
 
     public String setPlayer(String playerName, int id) {
@@ -78,13 +97,13 @@ public class GameController {
     }
 
     public String checkIfGameOver() {
+        String msg = "";
+
         Player clientPlayer = game.getPlayer(PLAYER_CLIENT);
         List<Ninja> clientNinjas = clientPlayer.getBoard().getNinjas();
-        String msg = "";
 
         Player hostPlayer = game.getPlayer(PLAYER_HOST);
         List<Ninja> hostNinjas = hostPlayer.getBoard().getNinjas();
-
 
         if (clientNinjas.isEmpty()) {
             isGameOver = true;
@@ -102,7 +121,7 @@ public class GameController {
         setPlayerInTurn(random.nextInt(2));
     }
 
-    public static boolean isGameOver() {
+    public boolean isGameOver() {
         return isGameOver;
     }
 
@@ -118,8 +137,12 @@ public class GameController {
         return game.getPlayer(id).getBoard().getNinjas();
     }
 
-    public synchronized boolean isHostInTurn(){
-        return playerInTurn == PLAYER_HOST;
+
+    public synchronized int getPlayerInTurn(){
+        return playerInTurn;
     }
 
+    public void reset() {
+        isGameOver = false;
+    }
 }

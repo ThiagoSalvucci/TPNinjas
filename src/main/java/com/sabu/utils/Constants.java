@@ -2,13 +2,15 @@ package com.sabu.utils;
 
 public class Constants {
 
-    public static final char BOSS = 'B';
     public static final int BOSS_HP = 2;
+    public static final int NINJA_HP = 1;
+    public static final int HIT = 1;
+    public static final char BOSS = 'B';
     public static final char BLANK = ' ';
     public static final char NINJA = 'N';
-    public static final int NINJA_HP = 1;
     public static final char BROKE = 'X';
-    public static final int HIT = 1;
+    public static final char MARK = 'O';
+
 
     public static final char ATTACK = 'A';
     public static final char MOVE = 'M';

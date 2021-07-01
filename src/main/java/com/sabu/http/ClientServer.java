@@ -14,12 +14,11 @@ import static com.sabu.http.HttpEndpoints.*;
 import static com.sabu.http.HttpUtils.OK;
 
 public class ClientServer {
-    public static final int port = Config.getPort();
+    public static final int port = Config.getPort() + 1;
     private static final String ip = Config.getIp();
     private HttpServer server;
 
     public ClientServer() {
-
         try {
             server = HttpServer.create(new InetSocketAddress(ip, port), 0);
             getConfirmConnection();
@@ -31,6 +30,10 @@ public class ClientServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void stopServer(){
+        server.stop(0);
     }
 
     public void postHostEndTurn() {
@@ -67,8 +70,7 @@ public class ClientServer {
             public void handler(HttpExchange exchange) {
                 if (!ClientManager.getInstance().isHostConnected()) {
                     ClientManager.getInstance().setHostConnected(true);
-                    InetSocketAddress hostAddress = exchange.getRemoteAddress();
-                    ClientManager.getInstance().setIp(hostAddress.getHostName());
+                    ClientManager.getInstance().setIp(exchange.getRemoteAddress().getHostName());
                     Response response = new Response(OK, "Connected successfully!", "");
                     HttpUtils.ok(Mapper.toJson(response), exchange);
                 } else {
@@ -83,7 +85,7 @@ public class ClientServer {
         server.createContext(READY, new CustomHandler() {
             @Override
             public void handler(HttpExchange exchange) {
-                ClientManager.getInstance().setClientReady(true);
+                ClientManager.getInstance().setHostReady(true);
                 Response response = new Response(OK, "Ready!", "");
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }

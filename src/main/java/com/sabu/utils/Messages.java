@@ -16,6 +16,8 @@ public class Messages {//TODO
 
 
     public static final String MSG_EXIT1 = "Do you want to exit to connection menu? Y/N";
+
+    public static final String MSG_VALID_INPUTS3 = "Only valids inputs are Y/N";
     public static final String MSG_VALID_CHARS3 = "YN";
     // End Client Manager & ServerManager messages
 

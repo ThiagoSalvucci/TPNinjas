@@ -11,10 +11,6 @@ public abstract class Unit {
         hp = 1;
     }
 
-    public Unit() {
-
-    }
-
     public abstract char getUnitType();
 
     public abstract void hitUnit();

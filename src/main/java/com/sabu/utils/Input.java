@@ -113,12 +113,12 @@ public class Input {
         return Integer.parseInt(response);
     }
 
-    public static char scanChar(String message, String chars) {
+    public static char getChar(String message, String chars) {
         String response = scanner.nextLine();
         response = response.toUpperCase(Locale.ROOT);
         chars = chars.toUpperCase(Locale.ROOT);
         while (!response.matches("^[ " + chars + "]$")) {
-            System.out.println(message);
+            Printer.print(message);
             response = scanner.nextLine().toUpperCase(Locale.ROOT);
         }
         return response.charAt(0);

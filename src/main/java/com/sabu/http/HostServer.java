@@ -2,6 +2,7 @@ package com.sabu.http;
 
 
 import com.sabu.entities.Action;
+import com.sabu.entities.Board;
 import com.sabu.entities.pieces.Ninja;
 import com.sabu.manager.gamemanager.GameController;
 import com.sabu.manager.gamemanager.ServerManager;
@@ -27,7 +28,6 @@ public class HostServer {
     private GameController gameController;
     private HttpServer server;
 
-
     public HostServer() {
         this.gameController = GameController.getInstance();
         try {
@@ -43,6 +43,10 @@ public class HostServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void stopServer(){
+        server.stop(0);
     }
 
     public void getClientEndTurn() {
@@ -85,8 +89,7 @@ public class HostServer {
             @Override
             public void handler(HttpExchange exchange) {
                 Action movement = Mapper.fromJson(exchange.getRequestBody(), Action.class);
-                gameController.move(movement, PLAYER_CLIENT);
-                Response response = new Response(OK, "Movement was successfully!", movement);
+                Response response = gameController.move(movement, PLAYER_CLIENT);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
@@ -97,9 +100,7 @@ public class HostServer {
             @Override
             public void handler(HttpExchange exchange) {
                 Action attack = Mapper.fromJson(exchange.getRequestBody(), Action.class);
-                String message = gameController.attack(attack, PLAYER_HOST);
-                Point point = new Point(attack.getPosX(), attack.getPosY());
-                Response response = new Response(OK, message, point);
+                Response response = gameController.attack(attack, gameController.getPlayer(PLAYER_CLIENT).getEnemyBoard(),PLAYER_HOST);
                 HttpUtils.ok(Mapper.toJson(response), exchange);
             }
         });
